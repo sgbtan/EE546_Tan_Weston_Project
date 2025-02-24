@@ -100,7 +100,7 @@ def zero : R22 := !![0,0;0,0]
 
 def one : R22 := !![1,0;0,1]
 
-def det (A : R22) : ℂ := (A 0 0)*(A 1 1)-(A 0 1)*(A 1 0)
+-- def det (A : R22) : ℂ := (A 0 0)*(A 1 1)-(A 0 1)*(A 1 0)
 
 def smul {m n: ℕ} (a:ℂ) (M: Mat m n) := λ i j => a * (M i j)
 
@@ -121,20 +121,14 @@ open Matrix
 
 def is_full_rank {m n : ℕ} (A: Matrix (Fin m) (Fin n) ℝ) : Prop := rank A = min m n
 
+def C : Matrix (Fin 2) (Fin 2) Real  := !![0, 1; 1, -5]
 
+def sq_full_rank_det {m : Nat} (A: Matrix (Fin m) (Fin m) Real) : Prop := A.det ≠ 0
 
+#eval C.det
 
-
-
-
-end R22
-
-
-
-
-
-
-
+example : sq_full_rank_det C := by
+  intro h
 
 
 
