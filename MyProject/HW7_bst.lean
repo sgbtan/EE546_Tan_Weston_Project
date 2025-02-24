@@ -5,6 +5,7 @@ import Mathlib.Data.Matrix.Rank
 import Mathlib.LinearAlgebra.Determinant
 import Mathlib.LinearAlgebra.Dimension.Finite
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+import Mathlib.Data.Matrix.Reflection
 
 /-
 Project: Proving controllability rank condition
@@ -88,49 +89,76 @@ This contradicts the hypothesis that C has full row rank.
 
 -/
 
-def Vect (n:ℕ) := (Fin n) → ℂ
+-- def Vect (n:ℕ) := (Fin n) → ℂ
 
-def Mat (m n: ℕ) := (Fin m) → (Fin n) → ℂ
+-- def Mat (m n: ℕ) := (Fin m) → (Fin n) → ℂ
 
-def R22 := Mat 2 2
+-- def R22 := Mat 2 2
 
-namespace R22
+-- namespace R22
 
-def zero : R22 := !![0,0;0,0]
+-- def zero : R22 := !![0,0;0,0]
 
-def one : R22 := !![1,0;0,1]
+-- def one : R22 := !![1,0;0,1]
 
 -- def det (A : R22) : ℂ := (A 0 0)*(A 1 1)-(A 0 1)*(A 1 0)
 
-def smul {m n: ℕ} (a:ℂ) (M: Mat m n) := λ i j => a * (M i j)
+-- def smul {m n: ℕ} (a:ℂ) (M: Mat m n) := λ i j => a * (M i j)
 
-noncomputable
-def mul {m n p:ℕ} (A : Mat m n) (B: Mat n p) : Mat m p :=
-  λ i j => ∑ k : (Fin n), (A i k) * (B k j)
+-- noncomputable
+-- def mul {m n p:ℕ} (A : Mat m n) (B: Mat n p) : Mat m p :=
+--   λ i j => ∑ k : (Fin n), (A i k) * (B k j)
 
-def A : Mat 2 2 := !![0,1;-6,-5]
-def B: Mat 2 1 := !![0;1]
+-- def A : Mat 2 2 := !![0,1;-6,-5]
+-- def B: Mat 2 1 := !![0;1]
 
-example : mul A B = !![1;-5] := by
-  funext i j
-  simp[mul]
-  simp[A]
-  simp[B]
+-- example : mul A B = !![1;-5] := by
+--   funext i j
+--   simp[mul]
+--   simp[A]
+--   simp[B]
 
 open Matrix
 
-def is_full_rank {m n : ℕ} (A: Matrix (Fin m) (Fin n) ℝ) : Prop := rank A = min m n
+-- def is_full_rank {m n : ℕ} (A: Matrix (Fin m) (Fin n) ℝ) : Prop := rank A = min m n
 
-def C : Matrix (Fin 2) (Fin 2) Real  := !![0, 1; 1, -5]
+-- def C : Matrix (Fin 2) (Fin 2) Real  := !![0, 1; 1, -5]
 
-def sq_full_rank_det {m : Nat} (A: Matrix (Fin m) (Fin m) Real) : Prop := A.det ≠ 0
+-- def sq_full_rank_det {m : Nat} (A: Matrix (Fin m) (Fin m) Real) : Prop := A.det ≠ 0
 
-#eval C.det
+def join_col (M : Matrix (Fin n) (Fin n) Nat) (V : Matrix (Fin n) (Fin 1) Nat) : Matrix (Fin n) (Fin (n+1)) Nat :=
+λ i j =>
+  if h: j.val < n then
+    let k : Fin n := Fin.mk j.val h
+    M i k
+  else V i 0
 
-example : sq_full_rank_det C := by
-  intro h
+def M : Matrix (Fin 2) (Fin 2) Nat :=
+!![1, 2; 3, 4]
 
-  sorry
+#print M
+
+def V : Matrix (Fin 2) (Fin 1) Nat :=
+!![5; 6]
+
+#print V
+
+def res : Matrix (Fin 2) (Fin 3) Nat :=
+!![1, 2, 5; 3, 4, 6]
+
+#eval join_col M V
+
+example : join_col M V = !![1, 2, 5; 3, 4, 6] := by
+  simp[M, V]
+  unfold join_col
+  -- ring
+  funext i j
+  fin_cases i <;> fin_cases j <;> simp
+
+def is_eigval (A : Matrix (Fin n) (Fin n) Complex) (eigval : Complex) : Prop :=
+  ∃v : Matrix (Fin n) (Fin 1) Complex,
+  A*v = eigval • v
+
 
 /-
 Encode the meaning of controllability in  lean:
