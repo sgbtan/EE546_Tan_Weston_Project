@@ -172,7 +172,10 @@ def not_full_rank (mat : Matrix (Fin n) (Fin m) ℂ): Prop :=
 structure block_matrix (m n : Type) (α : Type) where
 mat : Matrix m n α
 
+def my_block : block_matrix (Fin 2) (Fin 3) Nat :=
+  { mat := !![1, 2, 3; 4, 5, 6] }
 
+#print my_block
 
 
 /-
