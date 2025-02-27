@@ -23,9 +23,9 @@ def join_col (M : Matrix (Fin n) (Fin n) α) (V : Matrix (Fin n) (Fin 1) α) : M
     else V i 0
 
 
-def my_mat : Matrix (Fin 2) (Fin 2) ℕ := !![0, 1; 2, 3]
-def my_vec : Matrix (Fin 2) (Fin 1) ℕ := !![4; 5]
-def my_result : Matrix (Fin 2) (Fin 3) ℕ := !![0, 1, 4; 2, 3, 5]
+def my_mat : Matrix (Fin 2) (Fin 2) ℕ := !![0, 1; 3, 4]
+def my_vec : Matrix (Fin 2) (Fin 1) ℕ := !![2; 5]
+def my_result : Matrix (Fin 2) (Fin 3) ℕ := !![0, 1, 2; 3, 4, 5]
 
 #eval (join_col my_mat my_vec)
 
@@ -64,18 +64,18 @@ def not_full_rank (mat : Matrix (Fin n) (Fin m) ℂ): Prop :=
 
 
 def I : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, 1]
-def eig_I : ℂ := 1
-def evec_I : Matrix (Fin 2) (Fin 1) ℂ := !![1;1]
+def e_val_I : ℂ := 1
+def e_vec_I : Matrix (Fin 2) (Fin 1) ℂ := !![1;1]
 
-example : is_eig_val I eig_I := by
+example : is_eig_val I e_val_I := by
   unfold is_eig_val
-  use evec_I
-  simp[evec_I, I, eig_I]
+  use e_vec_I
+  simp[e_vec_I, I, e_val_I]
 
-example : is_eig_vec I evec_I := by
+example : is_eig_vec I e_vec_I := by
   unfold is_eig_vec
-  use eig_I
-  simp[evec_I, I, eig_I]
+  use e_val_I
+  simp[e_vec_I, I, e_val_I]
 
 
 
@@ -86,6 +86,8 @@ structure block_matrix  (B : Matrix (Fin n) (Fin (n+1)) α) where
   V : Matrix (Fin n) (Fin (1)) α
   R : Matrix (Fin n) (Fin (n+1)) α
   h : R = join_col M V
+
+
 
 -- variable ( my_block_mat : block_matrix my_mat my_vec )
 def my_block_mat : block_matrix my_result := ⟨my_mat, my_vec, join_col my_mat my_vec, by decide⟩
@@ -107,6 +109,10 @@ def toMat {n : ℕ} (B : List (Matrix (Fin n) (Fin 1) ℤ)) :=
 
 #check (List.cons v (List.cons v List.nil))[0] 1 0
 
+#eval (List.cons v (List.cons v List.nil))
+
 #check toMat (List.cons v (List.cons v List.nil))
+
+#eval (toMat (List.cons v (List.cons v List.nil)))
 
 example : ∃ q : Matrix (Fin 1) (Fin 3) ℤ, q ≠ 0 ∧ q * (toMat (List.cons v (List.cons v List.nil))) = 0 := sorry

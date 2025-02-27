@@ -1,4 +1,4 @@
-LEC_DIR := ..EE 546/Project/my_project/MyProject/
+LEC_DIR := ../
 BUILD_DIR := ./build
 
 SOURCES := Klavins_code.lean
