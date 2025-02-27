@@ -90,7 +90,23 @@ structure block_matrix  (B : Matrix (Fin n) (Fin (n+1)) α) where
 -- variable ( my_block_mat : block_matrix my_mat my_vec )
 def my_block_mat : block_matrix my_result := ⟨my_mat, my_vec, join_col my_mat my_vec, by decide⟩
 
-#eval my_block_mat
+#eval my_block_mat.R
 
-def my_fin : Fin 6 := ⟨ 5, by decide⟩
-def new_block_mat : block_matrix
+
+
+def my_fin : Fin 6 := ⟨5, by decide⟩
+--def new_block_mat : block_matrix
+
+
+
+
+def v : Matrix (Fin 3) (Fin 1) ℤ := !![1;2;3]
+
+def toMat {n : ℕ} (B : List (Matrix (Fin n) (Fin 1) ℤ)) :=
+  λ (i:Fin n) (j:Fin B.length) => B[j] i 0
+
+#check (List.cons v (List.cons v List.nil))[0] 1 0
+
+#check toMat (List.cons v (List.cons v List.nil))
+
+example : ∃ q : Matrix (Fin 1) (Fin 3) ℤ, q ≠ 0 ∧ q * (toMat (List.cons v (List.cons v List.nil))) = 0 := sorry
