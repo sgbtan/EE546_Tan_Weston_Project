@@ -155,27 +155,30 @@ example : join_col M V = !![1, 2, 5; 3, 4, 6] := by
   funext i j
   fin_cases i <;> fin_cases j <;> simp
 
+
 def is_eigval (A : Matrix (Fin n) (Fin n) Complex) (eigval : Complex) : Prop :=
   ∃v : Matrix (Fin n) (Fin 1) Complex,
   A*v = eigval • v
 
+
 def is_eig_vec (A : Matrix (Fin n) (Fin n) ℂ) (v: Matrix (Fin n) (Fin 1) ℂ): Prop :=
   ∃ eig : ℂ, A*v = eig•v
 
+
 def is_full_rank (mat : Matrix (Fin n) (Fin m) ℂ): Prop :=
   ∀ q : (Matrix (Fin 1) (Fin n) ℂ), q ≠ 0 → q * mat ≠ 0
+
 
 def not_full_rank (mat : Matrix (Fin n) (Fin m) ℂ): Prop :=
   ¬is_full_rank mat
 
 
-structure block_matrix (m n : Type) (α : Type) where
-mat : Matrix m n α
+structure block_matrix where
+mat : Matrix (Fin m) (Fin n) α
+vec : Matrix (Fin n) (Fin (n+1)) α
+res : Matrix (Fin m) (Fin (n+1)) α
+h   : res = join_col mat vec
 
-def my_block : block_matrix (Fin 2) (Fin 3) Nat :=
-  { mat := !![1, 2, 3; 4, 5, 6] }
-
-#print my_block
 
 
 /-
