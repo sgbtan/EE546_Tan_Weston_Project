@@ -27,7 +27,7 @@ def my_mat : Matrix (Fin 2) (Fin 2) ℕ := !![0, 1; 3, 4]
 def my_vec : Matrix (Fin 2) (Fin 1) ℕ := !![2; 5]
 def my_result : Matrix (Fin 2) (Fin 3) ℕ := !![0, 1, 2; 3, 4, 5]
 
-#eval (join_col my_mat my_vec)
+#check (join_col my_mat my_vec)
 
 example : join_col my_mat my_vec = my_result := by
   simp[my_mat,my_vec,my_result]
@@ -49,23 +49,23 @@ example : ∀ (r : (Matrix (Fin n) (Fin (n+1)) α)), ∃ (m : Matrix (Fin n) (Fi
 
 
 
-def is_eig_val (A : Matrix (Fin n) (Fin n) ℂ) (eig: ℂ): Prop :=
-  ∃ v : Matrix (Fin n) (Fin 1) ℂ, A*v = eig•v
+def is_eig_val (A : Matrix (Fin n) (Fin n) ℚ) (eig: ℚ): Prop :=
+  ∃ v : Matrix (Fin n) (Fin 1) ℚ, A*v = eig•v
 
-def is_eig_vec (A : Matrix (Fin n) (Fin n) ℂ) (v: Matrix (Fin n) (Fin 1) ℂ): Prop :=
-  ∃ eig : ℂ, A*v = eig•v
+def is_eig_vec (A : Matrix (Fin n) (Fin n) ℚ) (v: Matrix (Fin n) (Fin 1) ℚ): Prop :=
+  ∃ eig : ℚ, A*v = eig•v
 
-def is_full_rank (mat : Matrix (Fin n) (Fin m) ℂ): Prop :=
-  ∀ q : (Matrix (Fin 1) (Fin n) ℂ), q ≠ 0 → q * mat ≠ 0
+def is_full_rank (mat : Matrix (Fin n) (Fin m) ℚ): Prop :=
+  ∀ q : (Matrix (Fin 1) (Fin n) ℚ), q ≠ 0 → q * mat ≠ 0
 
-def not_full_rank (mat : Matrix (Fin n) (Fin m) ℂ): Prop :=
+def not_full_rank (mat : Matrix (Fin n) (Fin m) ℚ): Prop :=
   ¬is_full_rank mat
 
 
 
-def I : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, 1]
-def e_val_I : ℂ := 1
-def e_vec_I : Matrix (Fin 2) (Fin 1) ℂ := !![1;1]
+def I : Matrix (Fin 2) (Fin 2) ℚ := !![1, 0; 0, 1]
+def e_val_I : ℚ := 1
+def e_vec_I : Matrix (Fin 2) (Fin 1) ℚ := !![1;1]
 
 example : is_eig_val I e_val_I := by
   unfold is_eig_val
@@ -79,7 +79,7 @@ example : is_eig_vec I e_vec_I := by
 
 
 
---(M: Matrix (Fin n) (Fin n) ℂ) (V: Matrix (Fin n) (Fin 1) ℝ)
+--(M: Matrix (Fin n) (Fin n) ℚ) (V: Matrix (Fin n) (Fin 1) ℝ)
 
 structure block_matrix  (B : Matrix (Fin n) (Fin (n+1)) α) where
   M : Matrix (Fin n) (Fin (n)) α
@@ -94,25 +94,46 @@ def my_block_mat : block_matrix my_result := ⟨my_mat, my_vec, join_col my_mat 
 
 #eval my_block_mat.R
 
-
-
 def my_fin : Fin 6 := ⟨5, by decide⟩
 --def new_block_mat : block_matrix
 
 
 
 
-def v : Matrix (Fin 3) (Fin 1) ℤ := !![1;2;3]
 
-def toMat {n : ℕ} (B : List (Matrix (Fin n) (Fin 1) ℤ)) :=
-  λ (i:Fin n) (j:Fin B.length) => B[j] i 0
 
-#check (List.cons v (List.cons v List.nil))[0] 1 0
 
-#eval (List.cons v (List.cons v List.nil))
 
-#check toMat (List.cons v (List.cons v List.nil))
 
-#eval (toMat (List.cons v (List.cons v List.nil)))
+def v : Matrix (Fin 3) (Fin 1) ℚ := !![1;2;3]
+def mat : Matrix (Fin 3) (Fin 3) ℚ := ![![1, 1, 1], ![2 ,2 ,2], ![ 3, 3, 3]]
 
-example : ∃ q : Matrix (Fin 1) (Fin 3) ℤ, q ≠ 0 ∧ q * (toMat (List.cons v (List.cons v List.nil))) = 0 := sorry
+def toMat {n: ℕ} (B : List (Matrix (Fin n) (Fin 1) ℚ)) (m : ℕ):
+Matrix (Fin n) (Fin m) ℚ :=
+  Matrix.of (λ (i:Fin n) (j:Fin m) => B[j]! i 0)
+
+def my_v_list := List.cons v (List.cons v (List.cons v List.nil))
+
+def v_mat := toMat my_v_list 3
+
+set_option diagnostics true
+
+#check mat
+#check v_mat
+
+#eval mat
+#eval v_mat
+
+#eval mat*mat
+#eval v_mat*v_mat
+
+example : ∃ q : Matrix (Fin 1) (Fin 3) ℚ, q ≠ 0 ∧ q * v_mat = 0 := sorry
+
+example : not_full_rank v_mat := by
+  unfold not_full_rank is_full_rank
+  intro h
+
+
+  sorry
+
+#eval List.cons v (List.cons v List.nil)
