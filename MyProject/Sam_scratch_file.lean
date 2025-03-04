@@ -7,20 +7,18 @@ import Mathlib.LinearAlgebra.Dimension.Finite
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.Data.Matrix.Basic
 
-open Matrix
 -- structure state_space (n : ℕ) where
 --   A : Matrix (Fin n) (Fin n) ℝ
 --   B : Matrix (Fin n) (Fin 1) ℝ
 --   C : Matrix (Fin 1) (Fin n) ℝ
-
-
+open Matrix
 
 def join_col (M : Matrix (Fin n) (Fin n) α) (V : Matrix (Fin n) (Fin 1) α) : Matrix (Fin n) (Fin (n+1)) α:=
-  λ i j =>
+  Matrix.of (λ i j =>
     if h: (j.val < n) then
       let k : Fin n := ⟨j.val, h⟩
       M i k
-    else V i 0
+    else V i 0)
 
 
 def my_mat : Matrix (Fin 2) (Fin 2) ℕ := !![0, 1; 3, 4]
@@ -127,13 +125,33 @@ set_option diagnostics true
 #eval mat*mat
 #eval v_mat*v_mat
 
+def r : Matrix (Fin 1) (Fin 3) ℚ := !![-2, 1, 0]
+
 example : ∃ q : Matrix (Fin 1) (Fin 3) ℚ, q ≠ 0 ∧ q * v_mat = 0 := sorry
 
 example : not_full_rank v_mat := by
   unfold not_full_rank is_full_rank
-  intro h
-
-
-  sorry
+  push_neg
+  let r : Matrix (Fin 1) (Fin 3) ℚ := !![-2, 1, 0]
+  use r
+  constructor
+  .
+    trivial
+  .
+    simp[r,v_mat,my_v_list,v,toMat,Matrix.of]
+    funext i j
+    fin_cases i <;> fin_cases j <;> dsimp <;> sorry
 
 #eval List.cons v (List.cons v List.nil)
+
+def exp_mat  (A : (Matrix (Fin n) (Fin n) ℚ)) (i : ℕ) : (Matrix (Fin n) (Fin n) ℚ) :=
+  if i = 0 then 1 else if i = 1 then A else A * exp_mat A (i-1)
+
+def find_ctrb (A : (Matrix (Fin n) (Fin n) ℚ)) (B : (Matrix (Fin n) (Fin 1) ℚ)) (ctrb : List ( Matrix (Fin n) (Fin 1) ℚ) := List.nil) (i : ℕ := n):=
+  if i-1 = 0 then B :: ctrb else (find_ctrb A B ctrb (i-1)) ++ [(exp_mat A (i-1))*B]
+
+
+def my_A : Matrix (Fin 2) (Fin 2) ℚ := !![0, 1; -6, -5]
+def my_B : Matrix (Fin 2) (Fin 1) ℚ := !![0; 1]
+
+#eval toMat (find_ctrb my_A my_B) 2
