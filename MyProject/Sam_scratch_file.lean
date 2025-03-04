@@ -7,6 +7,7 @@ import Mathlib.LinearAlgebra.Dimension.Finite
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.Data.Matrix.Basic
 
+
 -- structure state_space (n : ℕ) where
 --   A : Matrix (Fin n) (Fin n) ℝ
 --   B : Matrix (Fin n) (Fin 1) ℝ
@@ -125,6 +126,8 @@ set_option diagnostics true
 #eval mat*mat
 #eval v_mat*v_mat
 
+#eval mat^3
+
 def r : Matrix (Fin 1) (Fin 3) ℚ := !![-2, 1, 0]
 
 example : ∃ q : Matrix (Fin 1) (Fin 3) ℚ, q ≠ 0 ∧ q * v_mat = 0 := sorry
@@ -155,3 +158,5 @@ def my_A : Matrix (Fin 2) (Fin 2) ℚ := !![0, 1; -6, -5]
 def my_B : Matrix (Fin 2) (Fin 1) ℚ := !![0; 1]
 
 #eval toMat (find_ctrb my_A my_B) 2
+
+abbrev MyMatType (n:ℕ) := Matrix (Fin n) (Fin n) ℚ
