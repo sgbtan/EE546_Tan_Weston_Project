@@ -160,3 +160,28 @@ def my_B : Matrix (Fin 2) (Fin 1) ℚ := !![0; 1]
 #eval toMat (find_ctrb my_A my_B) 2
 
 abbrev MyMatType (n:ℕ) := Matrix (Fin n) (Fin n) ℚ
+
+example : (p ↔ q) ↔ (¬q ↔ ¬p) := by
+  constructor
+  . intro ⟨hpq, hqp⟩
+    constructor
+    . intro hnq hp
+      exact hnq (hpq hp)
+    . intro hnp hq
+      exact hnp (hqp hq)
+  . intro ⟨hnqp, hnpq⟩
+    constructor
+    . intro hp
+      by_contra hnq
+      exact (hnqp hnq) hp
+    . intro hq
+      by_contra hnp
+      exact (hnpq hnp) hq
+
+example : (p → q) ↔ (¬q → ¬p) := by
+  constructor
+  . intro hpq hnq hp
+    exact hnq (hpq hp)
+  . intro hnqp hp
+    by_contra hq
+    exact (hnqp hq) hp
