@@ -40,13 +40,18 @@ example : ∀ (m : Matrix (Fin n) (Fin n) α) (v : Matrix (Fin n) (Fin 1) α), �
   obtain r : (Matrix (Fin n) (Fin (n+1)) α) := join_col mat vec
   use r
 
-example : ∀ (r : (Matrix (Fin n) (Fin (n+1)) α)), ∃ (m : Matrix (Fin n) (Fin n) α) (v : Matrix (Fin n) (Fin 1) α),  join_col m v = r := by
-  intro r
 
+example : ∀ (r : (Matrix (Fin 2) (Fin 3) ℂ)), ∃ (m : Matrix (Fin 2) (Fin 2) ℂ) (v : Matrix (Fin 2) (Fin 1) ℂ),  join_col m v = r := by
+  intro hr
+  let m : Matrix (Fin 2) (Fin 2) ℂ := !![1,2;4,5]
+  let v : Matrix (Fin 2) (Fin 1) ℂ := !![3;6]
+  use m
+  use v
+  unfold join_col
+  funext i j
+  simp[m, v]
+  fin_cases i <;> fin_cases j <;> dsimp <;>
   sorry
-
-
-
 
 
 def is_eig_val (A : Matrix (Fin n) (Fin n) ℚ) (eig: ℚ): Prop :=
@@ -131,21 +136,24 @@ example : ∃ q : Matrix (Fin 1) (Fin 3) ℚ, q ≠ 0 ∧ q * v_mat = 0 := by
 let r : Matrix (Fin 1) (Fin 3) ℚ := !![-2, 1, 0]
 use r
 simp
+push_neg
 constructor
-. simp[r]
-  push_neg
-  trivial
-. simp[r, of, v_mat, toMat, my_v_list]
-
-
-  sorry
+. trivial
+. funext i j
+  simp[r, vecMul, vecHead, vecTail, v_mat, toMat, my_v_list, v]
+  fin_cases i <;> fin_cases j <;> dsimp <;> linarith
 
 example : not_full_rank v_mat := by
   unfold not_full_rank is_full_rank
-  intro h
+  push_neg
+  let r : Matrix (Fin 1) (Fin 3) ℚ := !![-2, 1, 0]
+  use r
+  constructor
+  . trivial
+  . funext i j
+    simp[r, vecMul, vecHead, vecTail, v_mat, toMat, my_v_list, v]
+    fin_cases i <;> fin_cases j <;> dsimp <;> linarith
 
-
-  sorry
 
 #eval List.cons v (List.cons v List.nil)
 
