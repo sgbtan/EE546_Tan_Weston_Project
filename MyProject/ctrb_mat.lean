@@ -21,12 +21,14 @@ abbrev n_r_vec (n:ℕ) := Matrix (Fin 1) (Fin n) ℚ
 
 -- Might be able to just use left eig val and vec
 
-def is_eig_val (A : n_mat n) (eig: ℚ): Prop :=
+def is_eig_val (A : n_mat n) (eig: ℚ) : Prop :=
   ∃ v : n_r_vec n, v*A = eig•v
 
-def is_eig_vec (A : n_mat n) (v: n_r_vec n): Prop :=
+def is_eig_vec (A : n_mat n) (v: n_r_vec n) : Prop :=
   ∃ eig : ℚ, v*A = eig•v
 
+def is_eig_vec_of_val (A : n_mat n) (eig : ℚ) (v: n_r_vec n): Prop :=
+  v*A = eig•v
 --def is_left_eig_vec
 
 
@@ -94,11 +96,17 @@ theorem three_to_four_old : ∀ (A : n_mat n) (B : n_vec n) (e : ℚ),
     --unfold ABe join_col at nfr_ABe
 
     obtain ⟨q, hq, h⟩ := nfr_ABe
-    have eig_q : is_eig_vec A q := sorry
-    have qb_0 : q*B = 0 := sorry
+
+    have eig_q : is_eig_vec_of_val A e q:= by
+      unfold is_eig_vec_of_val
+      unfold ABe join_col at h
+      dsimp at h
+
+      sorry
+    have qb_0 : q*B = 0 :=
+
+      sorry
     unfold is_full_rank at h_ctrb
-
-
 
 
 
