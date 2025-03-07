@@ -80,6 +80,11 @@ which contradicts the assumption that $C$ has full row rank.
 
 -/
 
+/- # Approach
+
+imports
+
+-/
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic
 import Mathlib.Algebra.Group.MinimalAxioms
@@ -91,7 +96,6 @@ import Mathlib.Data.Matrix.Basic
 
 open Matrix
 
-/- # Approach-/
 abbrev n_mat (n:ℕ) := Matrix (Fin n) (Fin n) ℚ
 abbrev n_vec (n:ℕ) := Matrix (Fin n) (Fin 1) ℚ
 abbrev n_r_vec (n:ℕ) := Matrix (Fin 1) (Fin n) ℚ
