@@ -1,4 +1,6 @@
 -- This module serves as the root of the `MyProject` library.
 -- Import modules here that should be built as part of the library.
 import «MyProject».Basic
-import «MyProject».BlockMatLib
+import «MyProject».Libraries.BlockMatLib
+import «MyProject».Libraries.LinAlgDefs
+--import «MyProject».Libraries.ControlCons

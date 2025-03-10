@@ -1,5 +1,6 @@
 import Mathlib.Tactic
-
+import MyProject.Libraries.LinAlgDefs
+import MyProject.Libraries.BlockMatLib
 
 
 def find_ctrb (A : (n_mat n)) (B : (n_vec n)) (ctrb : List ( n_vec n) := List.nil) (i : ℕ := n):=

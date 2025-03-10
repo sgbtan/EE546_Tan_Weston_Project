@@ -1,4 +1,6 @@
 import Mathlib.Tactic
+import MyProject.Libraries.LinAlgDefs
+
 
 -- Create n x m+p matrix out of n x m and n x p matrices
 @[simp]
