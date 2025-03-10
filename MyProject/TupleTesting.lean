@@ -20,11 +20,11 @@ def TupMul (q : n_r_vec n) (MatVec : (n_mat n) × (n_vec n)) : (n_r_vec n) × (n
   (q*MatVec.1, q*MatVec.2)
 
 def TupToMat (MatVec : (Matrix (Fin n) (Fin m) ℚ) × (n_vec n)) : Matrix (Fin n) (Fin (m+1)) ℚ :=
-  Matrix.of (λ (i : Fin n) (j : Fin (m+1)) =>
+  λ (i : Fin n) (j : Fin (m+1)) =>
     if h: (j.val < m) then
       let k : Fin m := ⟨j.val, h⟩
       MatVec.1 i k
-    else MatVec.2 i 0)
+    else MatVec.2 i 0
 
 
 
@@ -60,8 +60,12 @@ theorem three_f_eq_f_three_x {α : Type} [Semiring α] (x : α) : 3 * f x = f (3
 example: ∀ (q : n_r_vec n) (MatVec : (n_mat n) × (n_vec n)),
  TupToMat (TupMul q MatVec) = (q * (TupToMat MatVec)) := by
   intro q mv
-  let ttm : Matrix (Fin 1) (Fin (n+1)) ℚ := TupToMat (TupMul q mv)
-  let qttm : Matrix (Fin 1) (Fin (n+1)) ℚ := q * TupToMat mv
+  unfold TupToMat
+  funext i j
+
+
+
+
 
 
 
