@@ -20,14 +20,14 @@ def getBlock {n m : ℕ} (A : Matrix (Fin n) (Fin m) ℚ)
 (a b: ℕ) (h: a ≤ b ∧ b < m )
 : Matrix (Fin n) (Fin (b-a)) ℚ :=
     λ i j =>
-    let k : Fin m := ⟨ j.val+a, by
-    obtain ⟨ h1, h2 ⟩ := h
-    have ha : a < m := by exact Nat.lt_of_le_of_lt h1 h2
-    have hj : j < b-a := by exact j.isLt
-    have hjb : j + a < b := by exact Nat.add_lt_of_lt_sub hj
-    exact Nat.lt_trans hjb h2
-  ⟩
-  A i k
+      let k : Fin m := ⟨ j.val+a, by
+      obtain ⟨ h1, h2 ⟩ := h
+      have ha : a < m := by exact Nat.lt_of_le_of_lt h1 h2
+      have hj : j < b-a := by exact j.isLt
+      have hjb : j + a < b := by exact Nat.add_lt_of_lt_sub hj
+      exact Nat.lt_trans hjb h2
+      ⟩
+      A i k
 
 namespace Test
 
