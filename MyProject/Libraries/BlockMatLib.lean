@@ -22,8 +22,10 @@ def ofBlocks {n m p : ℕ}
 
 -- Gets a-b columns of n x m matrix
 @[simp]
-def getBlock {n m : ℕ} (A : Mat n m)
-(a b: ℕ) (h: a ≤ b ∧ b < m)
+def getBlock {n m : ℕ}
+(A : Mat n m)
+(a b: ℕ)
+(h: a ≤ b ∧ b < m)
 : Mat n (b-a) :=
   λ i j =>
     let k : Fin m := ⟨ j.val+a, by

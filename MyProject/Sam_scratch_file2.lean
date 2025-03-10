@@ -44,6 +44,8 @@ def myVec : n_vec 2 :=
 def q : n_r_vec 2 :=
   !![5, 6]
 
+def change_mat (myMat : n_mat 2) :=
+  myMat
 
 def myMatVec : (n_mat 2) × (n_vec 2) := (myMat, myVec)
 
