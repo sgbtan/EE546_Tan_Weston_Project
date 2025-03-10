@@ -5,9 +5,9 @@ import MyProject.Libraries.LinAlgDefs
 -- Create n x m+p matrix out of n x m and n x p matrices
 @[simp]
 def ofBlocks {n m p : ℕ}
-(A : Matrix (Fin n) (Fin m) ℚ)
-(B : Matrix (Fin n) (Fin p) ℚ)
-: Matrix (Fin n) (Fin (m+p)) ℚ :=
+(A : Mat n m)
+(B : Mat n p)
+: Mat n (m+p):=
   λ i j => if h : j.val < m then
     let k : Fin m := ⟨ j.val, h ⟩
     A i k
@@ -22,9 +22,9 @@ def ofBlocks {n m p : ℕ}
 
 -- Gets a-b columns of n x m matrix
 @[simp]
-def getBlock {n m : ℕ} (A : Matrix (Fin n) (Fin m) ℚ)
+def getBlock {n m : ℕ} (A : Mat n m)
 (a b: ℕ) (h: a ≤ b ∧ b < m)
-: Matrix (Fin n) (Fin (b-a)) ℚ :=
+: Mat n (b-a) :=
   λ i j =>
     let k : Fin m := ⟨ j.val+a, by
     obtain ⟨ h1, h2 ⟩ := h
@@ -38,9 +38,9 @@ def getBlock {n m : ℕ} (A : Matrix (Fin n) (Fin m) ℚ)
 -- Proves that q*[A B] = [q*A q*B] where q is row vector and A and B are matrices or column vectors
 @[simp]
 theorem distrib_ofBlocks {n m p : ℕ}
-(q : Matrix (Fin 1) (Fin n) ℚ)
-(A : Matrix (Fin n) (Fin m) ℚ)
-(B : Matrix (Fin n) (Fin p) ℚ)
+(q : Mat 1 n)
+(A : Mat n m)
+(B : Mat n p)
 : q * (ofBlocks A B) = ofBlocks (q*A) (q*B) := by
   ext i j
   rcases i
@@ -54,8 +54,8 @@ theorem distrib_ofBlocks {n m p : ℕ}
 -- Proves that block B of q*[A B C] is equal to q*B
 @[simp]
 theorem distrib_getBlock {n m: ℕ}
-(q : Matrix (Fin 1) (Fin n) ℚ)
-(A : Matrix (Fin n) (Fin m) ℚ)
+(q : Mat 1 n)
+(A : Mat n m)
 (a b : ℕ) (h: a ≤ b ∧ b < m)
 : q * (getBlock A a b h) = getBlock (q*A) a b h := by
   ext i j

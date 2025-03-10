@@ -10,5 +10,5 @@ def ctrb_mat (A : (n_mat n)) (B : (n_vec n)) :=
   toMat (find_ctrb A B) n
 
 
-def ABe (A : n_mat n) (B : n_vec n) (e : ℚ) :=
+def ABe (A : n_mat n) (B : n_vec n) (e : α) :=
   join_col (A-e•(1 : n_mat n)) B
