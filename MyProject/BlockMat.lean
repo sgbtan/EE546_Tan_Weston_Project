@@ -17,15 +17,15 @@ def ofBlocks {n m p : ℕ}
   B i k
 
 def getBlock {n m : ℕ} (A : Matrix (Fin n) (Fin m) ℚ)
-(a b: ℕ) (h: a ≤ b ∧ b < m)
+(a b: ℕ) (h: a ≤ b ∧ b < m )
 : Matrix (Fin n) (Fin (b-a)) ℚ :=
-  λ i j =>
-  let k : Fin m := ⟨ j.val+a, by
-  obtain ⟨ h1, h2 ⟩ := h
-  have ha : a < m := by exact Nat.lt_of_le_of_lt h1 h2
-  have hj : j < b-a := by exact j.isLt
-  have hjb : j + a < b := by exact Nat.add_lt_of_lt_sub hj
-  exact Nat.lt_trans hjb h2
+    λ i j =>
+    let k : Fin m := ⟨ j.val+a, by
+    obtain ⟨ h1, h2 ⟩ := h
+    have ha : a < m := by exact Nat.lt_of_le_of_lt h1 h2
+    have hj : j < b-a := by exact j.isLt
+    have hjb : j + a < b := by exact Nat.add_lt_of_lt_sub hj
+    exact Nat.lt_trans hjb h2
   ⟩
   A i k
 
@@ -35,15 +35,15 @@ variable (A : Matrix (Fin 4) (Fin 4) ℚ)
          (B : Matrix (Fin 4) (Fin 1) ℚ)
          (q : Matrix (Fin 1) (Fin 4) ℚ)
 
-#check getBlock (q*(ofBlocks A B)) 0 4 ⟨ by exact Nat.zero_le 4, by exact lt_add_one 4 ⟩
-#check getBlock (q*(ofBlocks A B)) 4 4 ⟨ by exact Nat.le_of_ble_eq_true rfl, by exact lt_add_one 4 ⟩
+#check getBlock (q*(ofBlocks A B)) 0 4 ⟨by decide, by decide⟩
+#check getBlock (q*(ofBlocks A B)) 4 4 ⟨by decide, by decide⟩
 
 def W : Matrix (Fin 2) (Fin 2) ℚ := !![1,2;3,4]
 def R : Matrix (Fin 2) (Fin 1) ℚ := !![1;1]
 def s : Matrix (Fin 1) (Fin 2) ℚ := !![1,1]
 
 #eval ofBlocks W R
-#eval getBlock (ofBlocks W R) 0 1 ⟨ by exact Nat.zero_le 1, by exact Nat.one_lt_succ_succ 1 ⟩
+#eval getBlock (ofBlocks W R) 0 1 ⟨by decide, by decide⟩
 
 end Test
 
