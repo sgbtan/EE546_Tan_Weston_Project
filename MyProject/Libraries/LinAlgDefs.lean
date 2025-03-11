@@ -7,12 +7,14 @@ abbrev α : Type := ℚ
 abbrev Mat (n m:ℕ) := Matrix (Fin n) (Fin m) α
 
 -- Eigenvalues and eigenvectors
+@[simp]
 def is_eig_val {n : ℕ}
 (A : Mat n n)
 (eig: α)
 : Prop :=
   ∃ v : Mat 1 n, v*A = eig•v
 
+@[simp]
 def is_eig_vec {n : ℕ}
 (A : Mat n n)
 (v: Mat 1 n)
@@ -21,11 +23,13 @@ def is_eig_vec {n : ℕ}
 
 
 -- Full rank
+@[simp]
 def is_full_rank {n m: ℕ}
 (mat : Mat n m)
 : Prop :=
   ∀ q : (Mat 1 n), q ≠ 0 → q * mat ≠ 0
 
+@[simp]
 def not_full_rank {n m: ℕ}
 (mat : Mat n m)
 : Prop :=
@@ -33,12 +37,14 @@ def not_full_rank {n m: ℕ}
 
 
 -- Similarity
+@[simp]
 def is_similar_mat {n : ℕ}
 (A : Mat n n)
 (A' : Mat n n)
 : Prop :=
   ∃ (P: Mat n n), P.det ≠ 0 ∧ A' = P*A*P⁻¹
 
+@[simp]
 def is_similar_vec {n : ℕ}
 (B : Mat n n)
 (B' : Mat n n)
