@@ -26,7 +26,7 @@ def ofBlocks {n m p : ℕ}
 def getBlock {n m : ℕ}
 (A : Mat n m)
 (a b: ℕ)
-(h: a ≤ b ∧ b < m)
+(h: a ≤ b ∧ b < m := by decide)
 : Mat n (b-a) :=
   λ i j =>
     let k : Fin m := ⟨ j.val+a, by
@@ -69,3 +69,40 @@ theorem distrib_getBlock {n m: ℕ}
   rename_i i hi j ji
   unfold getBlock
   simp[Matrix.mul_apply]
+
+-- getBlock (ofBlocks A B) i j = B
+-- Prove that a + b - b = a
+theorem add_sub_self (m p : ℕ) : m + p - 1 - (m - 1) = p := by
+  calc m + p - 1 - (m - 1)
+    _ = (m + p - 1) - (m - 1) := by exact rfl
+    _ = (m + p - 1) - m + 1 := by rw [Nat.sub_sub (m + p - 1) m 1]
+    _ = m + p - 1 - m + 1 := by exact rfl
+    _ = m + p - 1 + 1 - m := by sorry
+    _ = m + p - m := by sorry
+    _ = p := by simp
+
+
+def undoHelper
+(A : Mat n m)
+(B : Mat n p)
+(h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
+: Prop :=
+  let AB := ofBlocks A B
+  let Bnew : Mat n p := cast (by rw[add_sub_self m p]) (getBlock AB (m-1) (m+p-1) h)
+  B = Bnew
+
+
+theorem undoBlock {n m p: ℕ}
+(A : Mat n m)
+(B : Mat n p)
+(h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
+: undoHelper A B h := by
+  sorry
+
+
+
+-- ∀ A B i j : A = B → getBlock A i j = getBlock B i j
+
+def my_mat : Mat 2 2 := !![1, 2; 2, 5]
+
+#eval my_mat 1 0
