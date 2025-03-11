@@ -20,6 +20,7 @@ def ofBlocks {n m p : ℕ}
     let k : Fin p := ⟨ j.val - m, this ⟩
     B i k
 
+
 -- Gets a-b columns of n x m matrix
 @[simp]
 def getBlock {n m : ℕ}
@@ -37,6 +38,7 @@ def getBlock {n m : ℕ}
     ⟩
     A i k
 
+
 -- Proves that q*[A B] = [q*A q*B] where q is row vector and A and B are matrices or column vectors
 @[simp]
 theorem distrib_ofBlocks {n m p : ℕ}
@@ -52,6 +54,7 @@ theorem distrib_ofBlocks {n m p : ℕ}
   by_cases hj: j < m
   <;>
   simp[Matrix.mul_apply]
+
 
 -- Proves that block B of q*[A B C] is equal to q*B
 @[simp]
