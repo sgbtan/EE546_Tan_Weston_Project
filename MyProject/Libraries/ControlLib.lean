@@ -28,7 +28,7 @@ def ctrbMat {n : ℕ}
 (B : (Mat n 1)) :=
   listToMat (find_ctrb A B)
 
-
+-- Constructs
 def find_eqb {n : ℕ}
 (e : α)
 (q : (Mat 1 n))

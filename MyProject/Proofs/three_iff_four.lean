@@ -13,28 +13,45 @@ is_full_rank (ABe A B e) := by
   have ctrbFR := hq q qNZ
   --unfold ctrbMat listToMat at ctrbFR
   unfold ABe
-  by_contra ABeFR
+  by_contra ABeNFR
   have qBZ : q*B=0 := by
+    rw[distrib_ofBlocks] at ABeNFR
+    -- let ABe : ofBlocks (q * (A - e • 1)) (q * B) := sorry
+    -- unfold ofBlocks at ABe
+
     sorry
+
   have qAe : q*A=e•q := by
-    --apply distrib_ofBlocks q A B
+    rw[distrib_ofBlocks] at ABeNFR
     sorry
+
   have qAek : ∀ (k : ℕ), q*(A^k)=(e^k)•q := by
     intro k
     induction k with
     | zero => simp
     | succ k' ih =>
-      sorry
-  obtain ctrbNFR : q*ctrbMat A B = 0 := by
+      -- use calc starting with q*A^(k'+1)
+      calc q*A^(k'+1)
+        _ = q*(A^k'*A) := by exact rfl
+        _ = q*A^k'*A   := by exact Eq.symm (Matrix.mul_assoc q (A ^ k') A)
+        _ = (e^k'•q)*A := by simp[ih]
+        _ = e^k'•(q*A) := by exact Matrix.smul_mul (e^k') q A
+        _ = e^k'•(e•q) := by exact congrArg (HSMul.hSMul (e ^ k')) qAe
+        _ = (e^k'*e)•q := by exact smul_smul (e ^ k') e q
+        _ = e^(k'+1)•q := by ring_nf
+
+  --let eqb := eqbMat e q B
+   -- obtain ctrbNFR : q*ctrbMat A B = 0 := by
     -- unfold ctrbMat listToMat
     -- ext i j
     -- rcases i
     -- rcases j
     -- rename_i i hi j ji
-    induction n with
-    | zero => unfold ctrbMat listToMat; sorry
-    | succ n' ih =>
-      sorry
+    -- induction n with
+    -- | zero => trivial
+    -- | succ n' ih =>
+
+     -- sorry
   exact ctrbFR ctrbNFR
 
 
