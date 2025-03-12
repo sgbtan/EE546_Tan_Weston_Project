@@ -41,7 +41,10 @@ is_full_rank (ABe A B e) := by
         _ = e^(k'+1)•q := by ring_nf
 
   --let eqb := eqbMat e q B
-   -- obtain ctrbNFR : q*ctrbMat A B = 0 := by
+  obtain ctrbNFR : q*ctrbMat A B = 0 := by
+    unfold ctrbMat listToMat
+
+    sorry
     -- unfold ctrbMat listToMat
     -- ext i j
     -- rcases i

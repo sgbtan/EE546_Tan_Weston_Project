@@ -21,6 +21,27 @@ def find_ctrb {n : ℕ}
   else
     (find_ctrb A B (i-1)) ++ [(A^(i-1))*B]
 
+def find_ctrb2 {n: ℕ}
+(A : (Mat n n))
+(B : (Mat n 1))
+(m : ℕ := n)
+(i : ℕ := n)
+: Mat n m :=
+  if i-1 = 0
+    then
+    have hm : m = 1 := by sorry
+    have hmat : Mat n 1 = Mat n m := by sorry
+    have Bnew : Mat n m := cast hmat B
+    Bnew
+  else
+    have hm : m = i := by sorry
+    have hmat : Mat n (i-1+1) = Mat n m := by sorry
+    have AB := ofBlocks (find_ctrb2 A B (i-1) (i-1)) ((A^(i-1))*B)
+    have ABnew : Mat n m := cast hmat AB
+    ABnew
+
+
+
 
 -- Calls find_ctrb and converts the result into the contralability matrix
 def ctrbMat {n : ℕ}
