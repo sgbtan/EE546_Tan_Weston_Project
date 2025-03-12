@@ -72,31 +72,37 @@ theorem distrib_getBlock {n m: ℕ}
 
 -- getBlock (ofBlocks A B) i j = B
 -- Prove that a + b - b = a
-theorem add_sub_self (m p : ℕ) : m + p - 1 - (m - 1) = p := by
-  calc m + p - 1 - (m - 1)
-    _ = (m + p - 1) - (m - 1) := by exact rfl
-    _ = (m + p - 1) - m + 1 := by rw [Nat.sub_sub (m + p - 1) m 1]
-    _ = m + p - 1 - m + 1 := by exact rfl
-    _ = m + p - 1 + 1 - m := by sorry
-    _ = m + p - m := by sorry
-    _ = p := by simp
+theorem add_sub_self
+(m p : ℕ)
+(hm : m > 0)
+: m + p - 1 - (m - 1) = p := by
+  cases m with
+  | zero =>
+    contradiction
+  | succ m =>
+    simp
 
 
 def undoHelper
 (A : Mat n m)
 (B : Mat n p)
 (h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
+(hm : m > 0)
 : Prop :=
   let AB := ofBlocks A B
-  let Bnew : Mat n p := cast (by rw[add_sub_self m p]) (getBlock AB (m-1) (m+p-1) h)
+  let Bnew : Mat n p := cast (by rw[add_sub_self m p hm]) (getBlock AB (m-1) (m+p-1) h)
   B = Bnew
 
+def hm (m:ℕ): Prop := m<0
 
 theorem undoBlock {n m p: ℕ}
 (A : Mat n m)
 (B : Mat n p)
 (h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
-: undoHelper A B h := by
+(hm : m >0)
+: undoHelper A B h hm:= by
+  unfold undoHelper
+  intro x y
   sorry
 
 
