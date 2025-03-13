@@ -26,17 +26,20 @@ def ofBlocks {n m p : ℕ}
 def getBlock {n m : ℕ}
 (A : Mat n m)
 (a b: ℕ)
-(h: a ≤ b ∧ b < m := by decide)
+(h: a < b ∧ b ≤ m := by decide)
 : Mat n (b-a) :=
   λ i j =>
     let k : Fin m := ⟨ j.val+a, by
     obtain ⟨ h1, h2 ⟩ := h
-    have ha : a < m := by exact Nat.lt_of_le_of_lt h1 h2
+    have ha : a < m := by exact Nat.lt_of_lt_of_le h1 h2
     have hj : j < b-a := by exact j.isLt
     have hjb : j + a < b := by exact Nat.add_lt_of_lt_sub hj
-    exact Nat.lt_trans hjb h2
+    exact Nat.lt_of_lt_of_le hjb h2
     ⟩
     A i k
+
+def myMat : Mat 1 4 := !![0,1,2,3]
+#eval getBlock myMat 3 4
 
 
 -- Proves that q*[A B] = [q*A q*B] where q is row vector and A and B are matrices or column vectors
@@ -61,7 +64,7 @@ theorem distrib_ofBlocks {n m p : ℕ}
 theorem distrib_getBlock {n m: ℕ}
 (q : Mat 1 n)
 (A : Mat n m)
-(a b : ℕ) (h: a ≤ b ∧ b < m)
+(a b : ℕ) (h: a < b ∧ b ≤ m)
 : q * (getBlock A a b h) = getBlock (q*A) a b h := by
   ext i j
   rcases i
