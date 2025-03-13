@@ -14,7 +14,7 @@ theorem ctrb_first_col {n : ℕ}
 (hn : n > 1)
 (A : Mat n n)
 (B : Mat n 1)
-: getBlock (ctrbMat A B) 0 1 ⟨ by decide, by exact hn ⟩ = B := by
+: getBlock (ctrbMat A B) 0 1 ⟨ by decide, by exact Nat.one_le_of_lt hn ⟩ = B := by
   ext i j
   simp[getBlock,ctrbMat]
   have hj : j = 0 := by
@@ -41,7 +41,7 @@ theorem ctrb_cols
 (hm : m + 1 < n)
 (A : Mat n n)
 (B : Mat n 1)
-: ↑(getBlock (ctrbMat A B) m (m+1) ⟨ by simp, hm ⟩) = ↑(A^m)*B := by
+: ↑(getBlock (ctrbMat A B) m (m+1) ⟨ by simp, by exact Nat.le_of_succ_le hm ⟩) = ↑(A^m)*B := by
   ext i j
   rcases i
   rcases j
