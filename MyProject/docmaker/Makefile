@@ -1,7 +1,7 @@
-LEC_DIR := ../
+LEC_DIR := ../EE546_W25/Lectures/
 BUILD_DIR := ./build
 
-SOURCES := Klavins_code.lean
+SOURCES := SL2.lean
 
 SOURCES     := $(wildcard $(SOURCES)/*.md) 
 
