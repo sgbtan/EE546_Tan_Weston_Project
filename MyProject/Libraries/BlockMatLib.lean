@@ -99,7 +99,7 @@ theorem undoBlock {n m p: ℕ}
 (A : Mat n m)
 (B : Mat n p)
 (h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
-(hm : m >0)
+(hm : m > 0)
 : undoHelper A B h hm:= by
   unfold undoHelper
   intro x y
