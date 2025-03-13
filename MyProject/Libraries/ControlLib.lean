@@ -21,8 +21,6 @@ theorem ctrb_first_col {n : ℕ}
     exact eq_zero_of_zero_eq_one rfl j
   rw[hj]
 
-theorem asd {j : ℕ} : Fin (j + 1 - j) = Fin 1 := by
-  simp
 
 instance {j:ℕ} : Coe (Fin 1) (Fin (j + 1 - j)) :=
   ⟨ λ x => by
@@ -34,6 +32,8 @@ instance {j:ℕ} : Coe (Fin 1) (Fin (j + 1 - j)) :=
 instance {n j:ℕ} : CoeSort (Matrix (Fin n) (Fin (j + 1 - j)) ℚ) (Matrix (Fin n) (Fin 1) ℚ) :=
   ⟨ λ M => λ i j => M i j ⟩
 
+def hThing {j:ℕ}: j + 1 - j = 1 := by simp
+
 @[simp]
 theorem ctrb_cols
 {n m: ℕ}
@@ -41,7 +41,7 @@ theorem ctrb_cols
 (hm : m + 1 < n)
 (A : Mat n n)
 (B : Mat n 1)
-: getBlock (ctrbMat A B) m (m+1) ⟨ by simp, hm ⟩ = ↑(A^m)*B := by
+: ↑(getBlock (ctrbMat A B) m (m+1) ⟨ by simp, hm ⟩) = ↑(A^m)*B := by
   ext i j
   rcases i
   rcases j
@@ -49,9 +49,11 @@ theorem ctrb_cols
   simp[getBlock,ctrbMat]
   have : j = 0 := by exact Nat.lt_one_iff.mp hj
   simp[this]
+  have : ↑(cast (Eq.symm (instCoeFinOfNatNatHSubHAdd_myProject.proof_2 instCoeFinOfNatNatHSubHAdd_myProject.proof_1) : Fin 1 = Fin (m + 1 - m)) 0) + m = m := by
 
+    sorry
+  rw[this]
 
-  sorry
 
 
 -- Constructs
