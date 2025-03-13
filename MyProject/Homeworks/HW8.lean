@@ -161,7 +161,13 @@ example : not_full_rank v_mat := by
   . trivial
   . funext i j
     simp[r, vecMul, vecHead, vecTail, v_mat, toMat, my_v_list, v]
-    fin_cases i <;> fin_cases j <;> dsimp <;> linarith
+    fin_cases i
+    <;>
+    fin_cases j
+    <;>
+    dsimp
+    <;>
+    linarith
 
 
 #eval List.cons v (List.cons v List.nil)
