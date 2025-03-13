@@ -3,69 +3,74 @@ import MyProject.Libraries.LinAlgDefs
 import MyProject.Libraries.BlockMatLib
 
 
--- Converts a list of column vectors to a matrix
-def listToMat {n: ℕ}
-(B : List (Mat n 1))
-: Mat n B.length :=
-  λ (i:Fin n) (j:Fin B.length) => B[j] i 0
-
-
--- Constructs a list of the column vectors of the contralability matrix
-def find_ctrb {n : ℕ}
-(A : (Mat n n))
-(B : (Mat n 1))
-(i : ℕ := n)
-: List (Mat n 1) :=
-  if i-1 = 0
-    then [B]
-  else
-    (find_ctrb A B (i-1)) ++ [(A^(i-1))*B]
-
-def find_ctrb2 {n: ℕ}
-(A : (Mat n n))
-(B : (Mat n 1))
-(m : ℕ := n)
-(i : ℕ := n)
-: Mat n m :=
-  if i-1 = 0
-    then
-    have hm : m = 1 := by sorry
-    have hmat : Mat n 1 = Mat n m := by sorry
-    have Bnew : Mat n m := cast hmat B
-    Bnew
-  else
-    have hm : m = i := by sorry
-    have hmat : Mat n (i-1+1) = Mat n m := by sorry
-    have AB := ofBlocks (find_ctrb2 A B (i-1) (i-1)) ((A^(i-1))*B)
-    have ABnew : Mat n m := cast hmat AB
-    ABnew
-
-
-
-
--- Calls find_ctrb and converts the result into the contralability matrix
+-- Takes in a matrix A and vector B and constructs  the contralability matrix
 def ctrbMat {n : ℕ}
-(A : (Mat n n))
-(B : (Mat n 1)) :=
-  listToMat (find_ctrb A B)
+(A : Mat n n)
+(B : Mat n 1)
+: Matrix (Fin n) (Fin n) ℚ :=
+  λ i j => (A^j.val*B) i 0
+
+theorem ctrb_first_col {n : ℕ}
+(hn : n > 1)
+(A : Mat n n)
+(B : Mat n 1)
+: getBlock (ctrbMat A B) 0 1 ⟨ by decide, by exact hn ⟩ = B := by
+  ext i j
+  simp[getBlock,ctrbMat]
+  have hj : j = 0 := by
+    exact eq_zero_of_zero_eq_one rfl j
+  rw[hj]
+
+theorem asd {j : ℕ} : Fin (j + 1 - j) = Fin 1 := by
+  simp
+
+instance {j:ℕ} : Coe (Fin 1) (Fin (j + 1 - j)) :=
+  ⟨ λ x => by
+  have : j + 1 - j = 1 := by exact Nat.add_sub_self_left j 1
+  rw[this]
+  exact x
+  ⟩
+
+instance {n j:ℕ} : CoeSort (Matrix (Fin n) (Fin (j + 1 - j)) ℚ) (Matrix (Fin n) (Fin 1) ℚ) :=
+  ⟨ λ M => λ i j => M i j ⟩
+
+@[simp]
+theorem ctrb_cols
+{n m: ℕ}
+(hn : n > 1)
+(hm : m + 1 < n)
+(A : Mat n n)
+(B : Mat n 1)
+: getBlock (ctrbMat A B) m (m+1) ⟨ by simp, hm ⟩ = ↑(A^m)*B := by
+  ext i j
+  rcases i
+  rcases j
+  rename_i i hi j hj
+  simp[getBlock,ctrbMat]
+  have : j = 0 := by exact Nat.lt_one_iff.mp hj
+  simp[this]
+
+
+  sorry
+
 
 -- Constructs
-def find_eqb {n : ℕ}
-(e : α)
-(q : (Mat 1 n))
-(B : (Mat n 1))
-(i : ℕ := n)
-: List (Mat 1 1) :=
-  if i-1 = 0
-    then [q*B]
-  else
-    (find_eqb e q B (i-1)) ++ [e^(i-1)•q*B]
+-- def find_eqb {n : ℕ}
+-- (e : α)
+-- (q : (Mat 1 n))
+-- (B : (Mat n 1))
+-- (i : ℕ := n)
+-- : List (Mat 1 1) :=
+--   if i-1 = 0
+--     then [q*B]
+--   else
+--     (find_eqb e q B (i-1)) ++ [e^(i-1)•q*B]
 
-def eqbMat {n : ℕ}
-(e : α)
-(q : (Mat 1 n))
-(B : (Mat n 1)) :=
-  listToMat (find_eqb e q B)
+-- def eqbMat {n : ℕ}
+-- (e : α)
+-- (q : (Mat 1 n))
+-- (B : (Mat n 1)) :=
+--   listToMat (find_eqb e q B)
 
 
 -- Constructs the matrix [(A-λI) B]

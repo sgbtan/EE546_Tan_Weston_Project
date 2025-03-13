@@ -83,28 +83,28 @@ theorem add_sub_self
     simp
 
 
-def undoHelper
-(A : Mat n m)
-(B : Mat n p)
-(h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
-(hm : m > 0)
-: Prop :=
-  let AB := ofBlocks A B
-  let Bnew : Mat n p := cast (by rw[add_sub_self m p hm]) (getBlock AB (m-1) (m+p-1) h)
-  B = Bnew
+-- def undoHelper
+-- (A : Mat n m)
+-- (B : Mat n p)
+-- (h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
+-- (hm : m > 0)
+-- : Prop :=
+--   let AB := ofBlocks A B
+--   let Bnew : Mat n p := cast (by rw[add_sub_self m p hm]) (getBlock AB (m-1) (m+p-1) h)
+--   B = Bnew
 
-def hm (m:ℕ): Prop := m<0
+-- def hm (m:ℕ): Prop := m<0
 
-theorem undoBlock {n m p: ℕ}
-(A : Mat n m)
-(B : Mat n p)
-(h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
-(hm : m > 0)
-: undoHelper A B h hm:= by
-  unfold undoHelper
-  intro x y
+-- theorem undoBlock {n m p: ℕ}
+-- (A : Mat n m)
+-- (B : Mat n p)
+-- (h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
+-- (hm : m > 0)
+-- : undoHelper A B h hm:= by
+--   unfold undoHelper
+--   intro x y
 
-  sorry
+--   sorry
 
 
 
