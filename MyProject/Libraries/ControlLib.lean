@@ -37,11 +37,11 @@ def hThing {j:ℕ}: j + 1 - j = 1 := by simp
 @[simp]
 theorem ctrb_cols
 {n m: ℕ}
-(hn : n > 1)
-(hm : m + 1 < n)
+(hn : n > 0)
+(hm : m < n)
 (A : Mat n n)
 (B : Mat n 1)
-: ↑(getBlock (ctrbMat A B) m (m+1) ⟨ by simp, by exact Nat.le_of_succ_le hm ⟩) = ↑(A^m)*B := by
+: (getBlock (ctrbMat A B) m (m+1) ⟨ by simp, by exact hm ⟩) = ↑(A^m)*B := by
   ext i j
   rcases i
   rcases j
