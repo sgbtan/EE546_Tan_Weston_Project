@@ -234,7 +234,6 @@ def ABe {n : ℕ} (A : Mat n n) (B : Mat n 1) (e : α) :=
 ```
 
 
-
  # Conclusion
 
-TODO: Re-describe your aim, what you achieved, and what is left to be done if anything. Also describe your current understanding of how well Lean and Mathlib support the area of mathematics you chose to explore, and what would be needed to fully support it.
+Our goal with this project is to prove in lean that the contrallability matrix has full row rank if the matrix $(A-\lambda I \quad B)$ has full row rank. While we have not yet completed this proof, we have built a significant amount of the machinery required. We have encoded the necessary linear algebra definitions, built functions to construct and destruct matrices from and to blocks, and used those functions to build other functions to construct the contrallability matrix and the matrix $(A-\lambda I \quad B)$. To complete the proof, we will need to prove several more lemmas around the functions we use to make these matrices, which will allow us to fill in the remaining sorrys in the main proof. 
