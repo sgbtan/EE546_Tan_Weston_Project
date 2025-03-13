@@ -73,14 +73,23 @@ def e_val_I : ℚ := 1
 def e_vec_I : Matrix (Fin 2) (Fin 1) ℚ := !![1;1]
 
 example : is_eig_val I e_val_I := by
-  unfold is_eig_val
+  simp[is_eig_val, e_val_I]
   use e_vec_I
-  simp[e_vec_I, I, e_val_I]
+  simp[e_vec_I, I]
+
+
+  -- unfold is_eig_val
+  -- use e_vec_I
+  -- simp[e_vec_I, I, e_val_I]
 
 example : is_eig_vec I e_vec_I := by
-  unfold is_eig_vec
+  simp[is_eig_vec, e_vec_I]
   use e_val_I
-  simp[e_vec_I, I, e_val_I]
+  simp[e_val_I, I]
+
+  -- unfold is_eig_vec
+  -- use e_val_I
+  -- simp[e_vec_I, I, e_val_I]
 
 
 

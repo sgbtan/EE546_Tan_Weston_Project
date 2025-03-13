@@ -54,7 +54,11 @@ $$
 W_c(t) = \int_{0}^{\infty} e^{A\tau} B B' e^{A'\tau} \,d\tau
 $$
 
-In this project, we aim to prove the equivalence of $3 \iff 4$. Chen describes the equivalence as follows.
+-/
+
+/- # Objective
+
+In this project, we aim to prove the equivalence of $3 \iff 4$. Proof of the equivalence is as follows.
 
 Assuming $C$ has full row rank, matrix $[A - \lambda I \quad B]$ has full row rank at every eigenvalue, $\lambda$, of $A$.
 
@@ -78,6 +82,9 @@ $$
 
 which contradicts the assumption that $C$ has full row rank.
 
+To show $\rho(C) < n$ implies $\rho([A - \lambda I \quad B]) < n$ at some eigenvalue $\lambda_1$ of $A$, we need to introduce Theorems 6.2 and 6.6.
+
+Theorem 6.2 states that controllability is invariant under any equivalence transformation.
 -/
 
 /- # Approach
