@@ -164,6 +164,7 @@ example : not_full_rank mat := by
     fin_cases i <;> fin_cases j <;> dsimp <;> simp
 ```
 <br>
+
 If matrix $[A - \lambda I \quad B]$ does not have full row rank at every eigenvalue, $\lambda$, of $A$, then $\exists \lambda_1$ and a $1 \times n$ vector $q \neq 0$ such that
 
 $$
@@ -172,6 +173,7 @@ $$
 
 which implies $qA = \lambda_1q$ and $qB = 0$.
 
+Here we require a way to construct a matrix from other matrices. 
 
 ### BlockMatLib
 
