@@ -50,7 +50,6 @@ theorem ctrb_cols
   have : j = 0 := by exact Nat.lt_one_iff.mp hj
   simp[this]
   have : ↑(cast (Eq.symm (instCoeFinOfNatNatHSubHAdd_myProject.proof_2 instCoeFinOfNatNatHSubHAdd_myProject.proof_1) : Fin 1 = Fin (m + 1 - m)) 0) + m = m := by
-
     sorry
   rw[this]
 

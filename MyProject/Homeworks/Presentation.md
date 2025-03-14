@@ -4,7 +4,6 @@
 <center><h2>EE 546 : Knowledge Representation and Reasoning</h2></center>
 
 <center>
-Department of Mechanical Engineering<br />
 Unviersity of Washington<br />
 Sam Weston & Boon Seng Tan<br />
 Winter 2025

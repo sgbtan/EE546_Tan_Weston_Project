@@ -19,10 +19,12 @@ is_full_rank (ABe A B e) := by
     -- let ABe : ofBlocks (q * (A - e • 1)) (q * B) := sorry
     -- unfold ofBlocks at ABe
 
+
     sorry
 
   have qAe : q*A=e•q := by
     rw[distrib_ofBlocks] at ABeNFR
+
     sorry
 
   have qAek : ∀ (k : ℕ), q*(A^k)=(e^k)•q := by
