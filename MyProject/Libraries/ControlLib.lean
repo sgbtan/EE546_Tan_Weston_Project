@@ -34,6 +34,24 @@ instance {n j:ℕ} : CoeSort (Matrix (Fin n) (Fin (j + 1 - j)) ℚ) (Matrix (Fin
 
 def hThing {j:ℕ}: j + 1 - j = 1 := by simp
 
+-- @[simp]
+-- theorem ctrb_cols
+-- {n m: ℕ}
+-- (hn : n > 0)
+-- (hm : m < n)
+-- (A : Mat n n)
+-- (B : Mat n 1)
+-- : (getBlock (ctrbMat A B) m (m+1) ⟨ by simp, by exact hm ⟩) = ↑(A^m)*B := by
+--   ext i j
+--   rcases i
+--   rcases j
+--   rename_i i hi j hj
+--   simp[getBlock,ctrbMat]
+--   have : j = 0 := by exact Nat.lt_one_iff.mp hj
+--   simp[this]
+
+--   sorry
+
 @[simp]
 theorem ctrb_cols
 {n m: ℕ}
@@ -43,15 +61,23 @@ theorem ctrb_cols
 (B : Mat n 1)
 : (getBlock (ctrbMat A B) m (m+1) ⟨ by simp, by exact hm ⟩) = ↑(A^m)*B := by
   ext i j
-  rcases i
-  rcases j
-  rename_i i hi j hj
-  simp[getBlock,ctrbMat]
-  have : j = 0 := by exact Nat.lt_one_iff.mp hj
-  simp[this]
-  have : ↑(cast (Eq.symm (instCoeFinOfNatNatHSubHAdd_myProject.proof_2 instCoeFinOfNatNatHSubHAdd_myProject.proof_1) : Fin 1 = Fin (m + 1 - m)) 0) + m = m := by
-    sorry
-  rw[this]
+  -- Get the concrete values from the Fin types
+  rcases i with ⟨i, hi⟩
+  rcases j with ⟨j, hj⟩
+  -- Since j is a Fin (m+1-m) = Fin 1, j must be 0
+  have hj_zero : j = 0 := by exact Nat.lt_one_iff.mp hj
+  simp [getBlock, ctrbMat, hj_zero]
+
+  -- Now we need to work out the indexing
+  -- When we call getBlock with (m, m+1), we extract column m
+  -- In the definition of getBlock, we convert j+a to an index for A
+  -- In our case, j=0 and a=m, so we're getting index 0+m = m
+  have index_eq : j + m = m := by simp [hj_zero]
+  rw [index_eq]
+
+  -- Now the goal should be something like (A^m * B) i 0 = (A^m * B) i 0
+  -- Which is true by reflexivity
+  rfl
 
 
 
