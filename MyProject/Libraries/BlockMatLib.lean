@@ -28,6 +28,7 @@ def getBlock {n m : ℕ}
 (a b: ℕ)
 (h: a < b ∧ b ≤ m := by decide)
 : Mat n (b-a) :=
+  Matrix.of (
   λ i j =>
     let k : Fin m := ⟨ j.val+a, by
     obtain ⟨ h1, h2 ⟩ := h
@@ -36,10 +37,10 @@ def getBlock {n m : ℕ}
     have hjb : j + a < b := by exact Nat.add_lt_of_lt_sub hj
     exact Nat.lt_of_lt_of_le hjb h2
     ⟩
-    A i k
+    A i k)
 
 def myMat : Mat 1 4 := !![0,1,2,3]
-#eval getBlock myMat 3 4
+#eval getBlock myMat 2 3
 
 
 -- Proves that q*[A B] = [q*A q*B] where q is row vector and A and B are matrices or column vectors
@@ -112,7 +113,3 @@ theorem add_sub_self
 
 
 -- ∀ A B i j : A = B → getBlock A i j = getBlock B i j
-
-def my_mat : Mat 2 2 := !![1, 2; 2, 5]
-
-#eval my_mat 1 0

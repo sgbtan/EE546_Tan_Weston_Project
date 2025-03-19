@@ -1,7 +1,7 @@
 import Mathlib.Tactic
 
 -- Set type of elements in matrices
-abbrev α : Type := ℚ
+abbrev α : Type := ℂ
 
 -- Abbreviations for common matrix and vector types
 abbrev Mat (n m:ℕ) := Matrix (Fin n) (Fin m) α
