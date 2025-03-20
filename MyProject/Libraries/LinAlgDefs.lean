@@ -50,3 +50,11 @@ def is_similar_vec {n : ℕ}
 (B' : Mat n n)
 : Prop :=
   ∃ (P: Mat n n), P.det ≠ 0 ∧ B = P * B'
+
+@[simp]
+theorem assocMat {n : ℕ}
+(A : Mat n n)
+(B : Mat n 1)
+(q : Mat 1 n)
+: q*(A*B) = (q*A)*B := by
+  exact Eq.symm (Matrix.mul_assoc q A B)

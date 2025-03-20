@@ -3,93 +3,63 @@ import MyProject.Libraries.LinAlgDefs
 import MyProject.Libraries.BlockMatLib
 
 
--- Takes in a matrix A and vector B and constructs  the contralability matrix
+
+-- Takes in a matrix A and vector B and constructs the contralability matrix
+
 noncomputable
 def ctrbMat {n : ℕ}
 (A : Mat n n)
 (B : Mat n 1)
 : Mat n n :=
-  Matrix.of (λ i j => (A^j.val*B) i 0)
+  λ i j => (A^j.val*B) i 0
 
-theorem ctrb_first_col {n : ℕ}
-(hn : n > 1)
+noncomputable
+def qCtrbMat {n : ℕ}
 (A : Mat n n)
 (B : Mat n 1)
-: getBlock (ctrbMat A B) 0 1 ⟨ by decide, by exact Nat.one_le_of_lt hn ⟩ = B := by
-  ext i j
-  simp[getBlock,ctrbMat]
-  have hj : j = 0 := by
-    exact eq_zero_of_zero_eq_one rfl j
-  rw[hj]
+(q : Mat 1 n)
+: Mat 1 n :=
+  λ i j => (q*(A^j.val*B)) i 0
 
-
-instance inst_coe {j:ℕ} : Coe (Fin 1) (Fin (j + 1 - j)) :=
-  ⟨ λ x => by
-  have : j + 1 - j = 1 := by exact Nat.add_sub_self_left j 1
-  rw[this]
-  exact x
-  ⟩
-
-instance inst_coe_sort {n j:ℕ} : CoeSort (Mat n (j+1-j)) (Mat n 1) :=
-  ⟨ λ M => λ i j => M i j ⟩
-
-def hThing {j:ℕ}: j + 1 - j = 1 := by simp
+@[simp]
+theorem ctrbMatEq {n : ℕ}
+(A : Mat n n)
+(B : Mat n 1)
+(q : Mat 1 n)
+: q*(ctrbMat A B) = qCtrbMat A B q := by
+  exact rfl
 
 @[simp]
 theorem ctrb_cols
 {n m: ℕ}
-(hn : n > 0)
 (hm : m < n)
 (A : Mat n n)
 (B : Mat n 1)
-: (getBlock (ctrbMat A B) m (m+1) ⟨ by simp, by exact hm ⟩) = ↑(A^m)*B := by
+: (getBlock (ctrbMat A B) m 1 (by exact hm)) = (A^m)*B := by
   ext i j
   rcases i
   rcases j
   rename_i i hi j hj
-  simp[getBlock,ctrbMat]
+  rw[getBlock,ctrbMat]
   have : j = 0 := by exact Nat.lt_one_iff.mp hj
   simp[this]
-  have : (↑(cast (Eq.symm (inst_coe.proof_2 inst_coe.proof_1) : Fin 1 = Fin (m + 1 - m))  0) + m) = m := by
-    refine Nat.add_left_eq_self.mpr ?_
-
-    sorry
-  simp[this]
-
-  sorry
 
 
 
-@[simp]
-theorem ctrb_cols2
+
+theorem ctrb_q_cols
 {n m: ℕ}
-(hn : n > 0)
 (hm : m < n)
 (A : Mat n n)
 (B : Mat n 1)
-: (getBlock (ctrbMat A B) m (m+1) ⟨ by simp, by exact hm ⟩ : Mat n 1)
-= ((A^m)*B : Mat n 1) := by
-  induction m with
-  | zero =>
-    ext i j
-    -- Get the concrete values from the Fin types
-    rcases i with ⟨i, hi⟩
-    rcases j with ⟨j, hj⟩
-    -- Since j is a Fin (m+1-m) = Fin 1, j must be 0
-    have hj_zero : j = 0 := by exact Nat.lt_one_iff.mp hj
-    simp [getBlock, ctrbMat, hj_zero]
-
-  | succ n' ih =>
-    ext i j
-      -- Get the concrete values from the Fin types
-    rcases i with ⟨i, hi⟩
-    rcases j with ⟨j, hj⟩
-    -- Since j is a Fin (m+1-m) = Fin 1, j must be 0
-    have hj_zero : j = 0 := by exact Nat.lt_one_iff.mp hj
-    simp [getBlock, ctrbMat, hj_zero]
-    have : Fin 1 = Fin (n' + 1 + 1 - (n' + 1)) := by sorry
-
-    sorry
+(q : Mat 1 n)
+: q*(getBlock (ctrbMat A B) m 1 (by exact hm)) = (q*(A^m))*B := by
+  ext i j
+  rcases i
+  rcases j
+  rename_i i hi j hj
+  have : j = 0 := by exact Nat.lt_one_iff.mp hj
+  simp[this]
 
 
 
@@ -103,3 +73,87 @@ def ABe {n : ℕ}
 (B : Mat n 1)
 (e : α) :=
   ofBlocks (A-e•(1 : Mat n n)) B
+
+
+theorem ABeLeft {n : ℕ}
+(A : Mat n n)
+(B : Mat n 1)
+(e : α)
+: getBlock (ABe A B e) 0 n (by simp) = A-e•(1 : Mat n n) := by
+  ext i j
+  simp[getBlock,ABe,ofBlocks]
+
+@[simp]
+theorem ABeRight {n : ℕ}
+(A : Mat n n)
+(B : Mat n 1)
+(e : α)
+: getBlock (ABe A B e) n 1 (by simp) = B := by
+  ext i j
+  have : j = 0 := by exact Fin.fin_one_eq_zero j
+  simp[getBlock,ABe,ofBlocks,this]
+
+@[simp]
+theorem getBlockEquiv {n : ℕ}
+(A : Mat n m)
+(B : Mat n m)
+(a l: ℕ)
+(h: a + l ≤ m)
+: A = B → getBlock A a l h = getBlock B a l h := by
+  intro hAB
+  exact congrFun (congrFun (congrFun (congrArg getBlock hAB) a) l) h
+
+@[simp]
+theorem getBlockZero {n : ℕ}
+(A : Mat n m)
+(a l: ℕ)
+(h: a + l ≤ m)
+: A = 0 → getBlock A a l h = 0 := by
+  intro hA
+  unfold getBlock
+  ext i j
+  simp [hA]
+
+
+@[simp]
+theorem ABeRightZero {n : ℕ}
+(A : Mat n n)
+(B : Mat n 1)
+(q : Mat 1 n)
+(e : α)
+: q * (ABe A B e) = 0 → q*B = 0 := by
+  intro hq
+  have fig : getBlock (q*(ABe A B e)) n 1 (by simp) = 0 := by
+    exact getBlockEquiv (q * ABe A B e) 0 n 1 (le_refl (n + 1)) hq
+  have mocha : getBlock (q*(ABe A B e)) n 1 (by simp) = q * getBlock (ABe A B e) n 1 (by simp) := by rfl
+  rw [mocha] at fig
+  rw [ABeRight] at fig
+  exact fig
+
+example (a b : Mat n n) : a - b = 0 → a = b := by
+  intro hab
+  have : a-b+b = 0+b := by exact congrFun (congrArg HAdd.hAdd hab) b
+  simp at this
+  exact this
+
+theorem ABeLeftZero {n : ℕ}
+(A : Mat n n)
+(B : Mat n 1)
+(q : Mat 1 n)
+(e : α)
+: q * (ABe A B e) = 0 → q*A = q*e•(1 : Mat n n) := by
+  intro hq
+  have fig : getBlock (q*(ABe A B e)) 0 n (by simp) = 0 := by
+    exact getBlockEquiv (q * ABe A B e) 0 0 n (by simp) hq
+  have mocha : getBlock (q*(ABe A B e)) 0 n (by simp) = q * getBlock (ABe A B e) 0 n (by simp) := by rfl
+  rw [mocha] at fig
+  rw [ABeLeft] at fig
+  obtain puggle : q * (A - e • 1) = q*A - q*e•(1 : Mat n n) := by
+    exact Matrix.mul_sub q A (e • 1)
+
+  rw [puggle] at fig
+  obtain thing : q*A - q*e•(1 : Mat n n) + q*e•(1 : Mat n n) = 0 + q*e•(1 : Mat n n):= by
+    exact congrFun (congrArg HAdd.hAdd fig) (q * e • 1)
+  simp at thing
+  simp
+  exact thing

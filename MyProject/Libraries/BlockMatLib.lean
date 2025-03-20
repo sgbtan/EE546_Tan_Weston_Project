@@ -21,14 +21,40 @@ def ofBlocks {n m p : ℕ}
     B i k
 
 
--- Gets a-b columns of n x m matrix
+def getCol {n m : ℕ}
+(A : Mat n m)
+(a : ℕ)
+(h: a < m)
+: Mat n 1 :=
+  λ i j =>
+    let k : Fin m := ⟨a, by exact h⟩
+    A i k
+
+
 @[simp]
 def getBlock {n m : ℕ}
+(A : Mat n m)
+(a l: ℕ)
+(h: a + l ≤ m)
+: Mat n l :=
+  λ i j =>
+    let k : Fin m := ⟨j.val + a, by
+    have hj : j<l := by exact j.isLt
+    have hjl : l>j := by trivial
+    have hjmja : j<m-a → j+a<m := by exact fun a_1 ↦ Nat.add_lt_of_lt_sub a_1
+    have : l≤ m-a := by exact Nat.le_sub_of_add_le' h
+    have hjm : j<m-a := by exact Fin.val_lt_of_le j this
+    exact hjmja hjm
+    ⟩
+    A i k
+
+-- Gets a-b columns of n x m matrix
+@[simp]
+def getBlockOld {n m : ℕ}
 (A : Mat n m)
 (a b: ℕ)
 (h: a < b ∧ b ≤ m := by decide)
 : Mat n (b-a) :=
-  Matrix.of (
   λ i j =>
     let k : Fin m := ⟨ j.val+a, by
     obtain ⟨ h1, h2 ⟩ := h
@@ -37,10 +63,14 @@ def getBlock {n m : ℕ}
     have hjb : j + a < b := by exact Nat.add_lt_of_lt_sub hj
     exact Nat.lt_of_lt_of_le hjb h2
     ⟩
-    A i k)
+    A i k
+
+
+
+
 
 def myMat : Mat 1 4 := !![0,1,2,3]
-#eval getBlock myMat 2 3
+#eval getBlock myMat 2 2 (by decide)
 
 
 -- Proves that q*[A B] = [q*A q*B] where q is row vector and A and B are matrices or column vectors
@@ -65,8 +95,8 @@ theorem distrib_ofBlocks {n m p : ℕ}
 theorem distrib_getBlock {n m: ℕ}
 (q : Mat 1 n)
 (A : Mat n m)
-(a b : ℕ) (h: a < b ∧ b ≤ m)
-: q * (getBlock A a b h) = getBlock (q*A) a b h := by
+(a l : ℕ) (h: a + l ≤ m)
+: q * (getBlock A a l h) = getBlock (q*A) a l h := by
   ext i j
   rcases i
   rcases j
