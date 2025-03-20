@@ -35,8 +35,6 @@ is_full_rank (ABe A B e) := by
     unfold qCtrbMat
     simp
     calc (q*A^j.val*B) i 0
-      _ = (q*(A^j.val)*B) i 0 := by exact rfl
-      _ = ((q*(A^j.val))*B) i 0 := by exact rfl
       _ = ((e^j.val•q)*B) i 0 := by rw[this]
       _ = 0 := by simp[qBZ]
 
