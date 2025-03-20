@@ -3,9 +3,8 @@ import MyProject.Libraries.LinAlgDefs
 import MyProject.Libraries.BlockMatLib
 
 
-
 -- Takes in a matrix A and vector B and constructs the contralability matrix
-
+@[simp]
 noncomputable
 def ctrbMat {n : ℕ}
 (A : Mat n n)
@@ -13,6 +12,7 @@ def ctrbMat {n : ℕ}
 : Mat n n :=
   λ i j => (A^j.val*B) i 0
 
+@[simp]
 noncomputable
 def qCtrbMat {n : ℕ}
 (A : Mat n n)
@@ -28,6 +28,7 @@ theorem ctrbMatEq {n : ℕ}
 (q : Mat 1 n)
 : q*(ctrbMat A B) = qCtrbMat A B q := by
   exact rfl
+
 
 @[simp]
 theorem ctrb_cols
@@ -45,36 +46,15 @@ theorem ctrb_cols
   simp[this]
 
 
-
-
-theorem ctrb_q_cols
-{n m: ℕ}
-(hm : m < n)
-(A : Mat n n)
-(B : Mat n 1)
-(q : Mat 1 n)
-: q*(getBlock (ctrbMat A B) m 1 (by exact hm)) = (q*(A^m))*B := by
-  ext i j
-  rcases i
-  rcases j
-  rename_i i hi j hj
-  have : j = 0 := by exact Nat.lt_one_iff.mp hj
-  simp[this]
-
-
-
-
-
-
-
 -- Constructs the matrix [(A-λI) B]
+@[simp]
 def ABe {n : ℕ}
 (A : Mat n n)
 (B : Mat n 1)
 (e : α) :=
   ofBlocks (A-e•(1 : Mat n n)) B
 
-
+@[simp]
 theorem ABeLeft {n : ℕ}
 (A : Mat n n)
 (B : Mat n 1)
@@ -130,12 +110,8 @@ theorem ABeRightZero {n : ℕ}
   rw [ABeRight] at fig
   exact fig
 
-example (a b : Mat n n) : a - b = 0 → a = b := by
-  intro hab
-  have : a-b+b = 0+b := by exact congrFun (congrArg HAdd.hAdd hab) b
-  simp at this
-  exact this
 
+@[simp]
 theorem ABeLeftZero {n : ℕ}
 (A : Mat n n)
 (B : Mat n 1)
@@ -157,3 +133,43 @@ theorem ABeLeftZero {n : ℕ}
   simp at thing
   simp
   exact thing
+
+@[simp]
+theorem hqAek {n : ℕ}
+(A : Mat n n)
+(q : Mat 1 n)
+(e : α)
+(qAe : q*A=e•q)
+(k : ℕ)
+: q*(A^k)=(e^k)•q := by
+  induction k with
+  | zero => simp
+  | succ k' ih =>
+    calc q*A^(k'+1)
+      _ = q*(A^k'*A) := by exact rfl
+      _ = q*A^k'*A   := by exact Eq.symm (Matrix.mul_assoc q (A ^ k') A)
+      _ = (e^k'•q)*A := by simp[ih]
+      _ = e^k'•(q*A) := by exact Matrix.smul_mul (e^k') q A
+      _ = e^k'•(e•q) := by exact congrArg (HSMul.hSMul (e ^ k')) qAe
+      _ = (e^k'*e)•q := by exact smul_smul (e ^ k') e q
+      _ = e^(k'+1)•q := by ring_nf
+
+@[simp]
+theorem hctrbNFR
+{n : ℕ}
+(A : Mat n n)
+(B : Mat n 1)
+(q : Mat 1 n)
+(e : α)
+(qBZ : q*B=0 )
+(qAek : ∀ (k : ℕ), q*(A^k)=(e^k)•q)
+: q*ctrbMat A B = 0 := by
+    obtain ctrbEq : q*ctrbMat A B = qCtrbMat A B q := by rfl
+    rw [ctrbEq]
+    ext i j
+    have := qAek j
+    unfold qCtrbMat
+    simp
+    calc (q*A^j.val*B) i 0
+      _ = ((e^j.val•q)*B) i 0 := by rw[this]
+      _ = 0 := by simp[qBZ]

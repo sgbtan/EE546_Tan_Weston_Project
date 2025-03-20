@@ -40,7 +40,20 @@ is_full_rank (ABe A B e) := by
 
   exact ctrbFR ctrbNFR
 
-
+theorem three_to_four2 :
+∀ (A : Mat n n) (B : Mat n 1),
+is_full_rank (ctrbMat A B) →
+∀ (e : α), is_eig_val A e →
+is_full_rank (ABe A B e) := by
+  unfold is_full_rank
+  intro A B hq e hev q qNZ
+  have ctrbFR := hq q qNZ
+  by_contra ABeNFR
+  have qBZ : q*B=0 := by exact (ABeRightZero A B q e) ABeNFR
+  have qAe : q*A=e•q := by simp [(ABeLeftZero A B q e) ABeNFR]
+  have qAek : ∀ (k : ℕ), q*(A^k)=(e^k)•q := by exact hqAek A q e qAe
+  obtain ctrbNFR : q*ctrbMat A B = 0 := by exact hctrbNFR A B q e qBZ qAek
+  exact ctrbFR ctrbNFR
 
 theorem four_to_three :
 ∀ (A : Mat n n) (B : Mat n 1) (e : α),

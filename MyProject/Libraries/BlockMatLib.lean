@@ -20,7 +20,7 @@ def ofBlocks {n m p : ℕ}
     let k : Fin p := ⟨ j.val - m, this ⟩
     B i k
 
-
+@[simp]
 def getCol {n m : ℕ}
 (A : Mat n m)
 (a : ℕ)
@@ -47,30 +47,6 @@ def getBlock {n m : ℕ}
     exact hjmja hjm
     ⟩
     A i k
-
--- Gets a-b columns of n x m matrix
-@[simp]
-def getBlockOld {n m : ℕ}
-(A : Mat n m)
-(a b: ℕ)
-(h: a < b ∧ b ≤ m := by decide)
-: Mat n (b-a) :=
-  λ i j =>
-    let k : Fin m := ⟨ j.val+a, by
-    obtain ⟨ h1, h2 ⟩ := h
-    have ha : a < m := by exact Nat.lt_of_lt_of_le h1 h2
-    have hj : j < b-a := by exact j.isLt
-    have hjb : j + a < b := by exact Nat.add_lt_of_lt_sub hj
-    exact Nat.lt_of_lt_of_le hjb h2
-    ⟩
-    A i k
-
-
-
-
-
-def myMat : Mat 1 4 := !![0,1,2,3]
-#eval getBlock myMat 2 2 (by decide)
 
 
 -- Proves that q*[A B] = [q*A q*B] where q is row vector and A and B are matrices or column vectors
@@ -103,43 +79,3 @@ theorem distrib_getBlock {n m: ℕ}
   rename_i i hi j ji
   unfold getBlock
   simp[Matrix.mul_apply]
-
--- getBlock (ofBlocks A B) i j = B
--- Prove that a + b - b = a
-theorem add_sub_self
-(m p : ℕ)
-(hm : m > 0)
-: m + p - 1 - (m - 1) = p := by
-  cases m with
-  | zero =>
-    contradiction
-  | succ m =>
-    simp
-
-
--- def undoHelper
--- (A : Mat n m)
--- (B : Mat n p)
--- (h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
--- (hm : m > 0)
--- : Prop :=
---   let AB := ofBlocks A B
---   let Bnew : Mat n p := cast (by rw[add_sub_self m p hm]) (getBlock AB (m-1) (m+p-1) h)
---   B = Bnew
-
--- def hm (m:ℕ): Prop := m<0
-
--- theorem undoBlock {n m p: ℕ}
--- (A : Mat n m)
--- (B : Mat n p)
--- (h : m-1 ≤ m+p-1 ∧ m+p-1 < m+p := by decide)
--- (hm : m > 0)
--- : undoHelper A B h hm:= by
---   unfold undoHelper
---   intro x y
-
---   sorry
-
-
-
--- ∀ A B i j : A = B → getBlock A i j = getBlock B i j
