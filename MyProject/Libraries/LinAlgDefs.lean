@@ -6,7 +6,7 @@ abbrev α : Type := ℂ
 -- Abbreviations for common matrix and vector types
 abbrev Mat (n m:ℕ) := Matrix (Fin n) (Fin m) α
 
--- Eigenvalues and eigenvectors
+-- Definitions for left eigenvalues and left eigenvectors
 @[simp]
 def is_eig_val {n : ℕ}
 (A : Mat n n)
@@ -22,7 +22,7 @@ def is_eig_vec {n : ℕ}
   ∃ eig : α, v*A = eig•v
 
 
--- Full rank
+-- Definitions for full rank and not full rank
 @[simp]
 def is_full_rank {n m: ℕ}
 (mat : Mat n m)
@@ -36,7 +36,7 @@ def not_full_rank {n m: ℕ}
   ¬is_full_rank mat
 
 
--- Similarity
+-- Definition for matrix similarity
 @[simp]
 def is_similar_mat {n : ℕ}
 (A : Mat n n)
@@ -44,6 +44,7 @@ def is_similar_mat {n : ℕ}
 : Prop :=
   ∃ (P: Mat n n), P.det ≠ 0 ∧ A' = P*A*P⁻¹
 
+-- Definition for vector similarity
 @[simp]
 def is_similar_vec {n : ℕ}
 (B : Mat n n)
@@ -51,6 +52,8 @@ def is_similar_vec {n : ℕ}
 : Prop :=
   ∃ (P: Mat n n), P.det ≠ 0 ∧ B = P * B'
 
+-- Defnition for matrix associativity
+-- This definition uses the existing defnition in mathlib but adds it to the simplifier in a format that is convenient
 @[simp]
 theorem assocMat {n : ℕ}
 (A : Mat n n)

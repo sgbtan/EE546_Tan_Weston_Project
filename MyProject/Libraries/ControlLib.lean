@@ -123,11 +123,13 @@ theorem ABeLeftZero {n : ℕ}
   have hgb : getBlock (q*(ABe A B e)) 0 n (by simp) = q * getBlock (ABe A B e) 0 n (by simp) := by rfl
   rw [hgb] at hqA
   rw [ABeLeft] at hqA
+  -- Proves that q can be distributed into [ A-λI ]
   obtain hqAe : q * (A - e • 1) = q*A - q*e•(1 : Mat n n) := by
     exact Matrix.mul_sub q A (e • 1)
   rw [hqAe] at hqA
-  obtain thing : q*A - q*e•(1 : Mat n n) + q*e•(1 : Mat n n) = 0 + q*e•(1 : Mat n n):= by
+  -- Rearranges hqAe so that it can be simplified to show the main goal
+  have : q*A - q*e•(1 : Mat n n) + q*e•(1 : Mat n n) = 0 + q*e•(1 : Mat n n):= by
     exact congrFun (congrArg HAdd.hAdd hqA) (q * e • 1)
-  simp at thing
+  simp at this
   simp
-  exact thing
+  exact this
