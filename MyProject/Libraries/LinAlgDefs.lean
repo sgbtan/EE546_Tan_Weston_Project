@@ -6,7 +6,7 @@ abbrev α : Type := ℂ
 -- Abbreviations for common matrix and vector types
 abbrev Mat (n m:ℕ) := Matrix (Fin n) (Fin m) α
 
--- Definitions for left eigenvalues and left eigenvectors
+-- Definitions for eigenvalues and left eigenvectors
 @[simp]
 def is_eig_val {n : ℕ}
 (A : Mat n n)
@@ -15,7 +15,7 @@ def is_eig_val {n : ℕ}
   ∃ v : Mat 1 n, v*A = eig•v
 
 @[simp]
-def is_eig_vec {n : ℕ}
+def is_L_eig_vec {n : ℕ}
 (A : Mat n n)
 (v: Mat 1 n)
 : Prop :=
