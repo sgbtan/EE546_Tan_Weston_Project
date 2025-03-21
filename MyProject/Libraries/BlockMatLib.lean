@@ -32,7 +32,7 @@ def getBlock {n m : ℕ}
     have hj : j<l := by exact j.isLt
     have hjl : l>j := by trivial
     have hjmja : j<m-a → j+a<m := by exact fun a_1 ↦ Nat.add_lt_of_lt_sub a_1
-    have : l≤m-a := by exact Nat.le_sub_of_add_le' h
+    have : l≤ m-a := by exact Nat.le_sub_of_add_le' h
     have hjm : j<m-a := by exact Fin.val_lt_of_le j this
     exact hjmja hjm
     ⟩

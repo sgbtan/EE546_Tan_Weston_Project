@@ -11,10 +11,14 @@ is_full_rank (ABe A B e) := by
   intro A B hq e _ q qNZ
   have ctrbFR := hq q qNZ
   by_contra ABeNFR
+
   have qBZ : q*B=0 := by exact (ABeRightZero A B q e) ABeNFR
   have qAe : q*A=e•q := by simp [(ABeLeftZero A B q e) ABeNFR]
+
   have qAek : ∀ (k : ℕ), q*(A^k)=(e^k)•q := by exact hqAek A q e qAe
+
   obtain ctrbNFR : q*ctrbMat A B = 0 := by exact hctrbNFR A B q e qBZ qAek
+
   exact ctrbFR ctrbNFR
 
 theorem four_to_three :
