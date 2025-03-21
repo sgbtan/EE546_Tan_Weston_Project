@@ -2,6 +2,7 @@ import Mathlib.Tactic
 import MyProject
 import MyProject.Proofs.three_to_four_lemmas
 
+-- Proof for the forward direction of steps 3 and 4 in theorem 6.1 of Linear System Theory and Design by Chen
 theorem three_to_four :
 ∀ (A : Mat n n) (B : Mat n 1),
 is_full_rank (ctrbMat A B) →
@@ -24,6 +25,8 @@ is_full_rank (ABe A B e) := by
   -- Use the contradiction between ctrbFR and ctrbNFR to prove False
   exact ctrbFR ctrbNFR
 
+
+-- Proof for the backwards direction of steps 3 and 4 in theorem 6.1 of Linear System Theory and Design by Chen
 theorem four_to_three :
 ∀ (A : Mat n n) (B : Mat n 1) (e : α),
 is_eig_val A e →
@@ -31,6 +34,8 @@ is_full_rank (ABe A B e) →
 is_full_rank (ctrbMat A B) := by
   sorry
 
+
+-- Proof for the equivalence of steps 3 and 4 in theorem 6.1 of Linear System Theory and Design by Chen
 theorem three_iff_four :
 ∀ (A : Mat n n) (B : Mat n 1) (e : ℚ),
 (is_eig_val A e) →
