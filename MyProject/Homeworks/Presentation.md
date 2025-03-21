@@ -214,169 +214,44 @@ q * (ABe A B e) = 0 → q*A = q*e•(1 : Mat n n) := by
 
 ## `hqAek` <span style="font-size: 12px;">three_to_four_lemmas</span>
 
-Theorem `hqAek` proves that $qA^k = \lambda^kq$.
+Theorem `hqAek` proves that $qA^k = \lambda^kq$ by `induction` and `calc`. 
 
 ```hs
 theorem hqAek {n : ℕ} (A : Mat n n) (q : Mat 1 n) (e : α) (qAe : q*A=e•q) (k : ℕ) : 
 q*(A^k)=(e^k)•q := by
-  sorry*
+  induction k with
+  | zero => simp
+  | succ k' ih =>
+    calc q*A^(k'+1)
+      _ = q*(A^k'*A) := by exact rfl
+      _ = q*A^k'*A   := by exact Eq.symm (Matrix.mul_assoc q (A ^ k') A)
+      _ = (e^k'•q)*A := by simp[ih]
+      _ = e^k'•(q*A) := by exact Matrix.smul_mul (e^k') q A
+      _ = e^k'•(e•q) := by exact congrArg (HSMul.hSMul (e ^ k')) qAe
+      _ = (e^k'*e)•q := by exact smul_smul (e ^ k') e q
+      _ = e^(k'+1)•q := by ring_nf
 ```
-`sorry*` indicates that the full proof is available in the `three_to_four_lemmas` library.
-
 ## `hctrbNFR` <span style="font-size: 12px;">three_to_four_lemmas</span>
 
-Theorem `hqAek` proves that if $qB = 0$, $q[B \quad AB \quad A^2B \cdots A^{n-1}B] = 0$. 
+Theorem `hqAek` proves that if $qB = 0$, $q[B \quad AB \quad A^2B \cdots A^{n-1}B] = 0$ by `ext` and `calc`. 
 
 ```hs
 theorem hctrbNFR {n : ℕ} (A : Mat n n) (B : Mat n 1) (q : Mat 1 n) (e : α) (qBZ : q*B=0 ) (qAek : ∀ (k : ℕ), q*(A^k)=(e^k)•q): 
 q*ctrbMat A B = 0 := by
-  sorry*
+    obtain ctrbEq : q*ctrbMat A B = qCtrbMat A B q := by rfl
+    rw [ctrbEq]
+    ext i j
+    have := qAek j
+    unfold qCtrbMat
+    simp
+    calc (q*A^j.val*B) i 0
+      _ = ((e^j.val•q)*B) i 0 := by rw[this]
+      _ = 0 := by simp[qBZ]
 ```
-`sorry*` indicates that the full proof is available in the `three_to_four_lemmas` library.
-
- <!-- ### LinAlgDefs
-
-We work mainly with matrices. Fortunately, the Matrix type is already defined in Mathlib in the Mathlib.Data.Matrix library. We use it by calling it as such.
-
-```hs
-Matrix (Fin n) (Fin m) ℚ
-```
-However, since we repeatedly call this definition, to simplify this syntax we abbreviate this as
-
-```hs
-abbrev α : Type := ℚ
-
-abbrev Mat (n m:ℕ) := Matrix (Fin n) (Fin m) α
-```
-so when we create a matrix, we do so by calling `Mat n m` where `n` and `m` define the size of the matrix. 
-
-### `is_eig_val` and `is_eig_vec`
-We first needed some way to declare given a matrix and a scalar, whether that scalar is an eigenvalue of the matrix. Similarly given a matrix and a vector, whether that vector is an eigenvector of the matrix. `is_eig_val` and `is_eig_vec` helps us achieve this.
-
-```hs
-def is_eig_val {n : ℕ} (A : Mat n n) (eig: α) : Prop :=
-  ∃ v : Mat 1 n, v*A = eig•v
-
-def is_eig_vec {n : ℕ} (A : Mat n n) (v: Mat 1 n) : Prop :=
-  ∃ eig : α, v*A = eig•v
-```
-
-### Example
-```hs
-def I : Matrix (Fin 2) (Fin 2) ℚ := !![1, 0; 0, 1]
-def e_val_I : ℚ := 1
-
-example : is_eig_val I e_val_I := by
-  simp[is_eig_val, e_val_I]
-  use e_vec_I
-  simp[e_vec_I, I]
-
-example : is_eig_vec I e_vec_I := by
-  simp[is_eig_vec, e_vec_I]
-  use e_val_I
-  simp[e_val_I, I]
-```
-
-### `is_full_rank` & `not_full_rank`
-We also needed to be able to declare if a matrix is full rank or not.
-
-```hs
-def is_full_rank {n m: ℕ} (mat : Mat n m) : Prop :=
-  ∀ q : (Mat 1 n), q ≠ 0 → q * mat ≠ 0
-
-def not_full_rank {n m: ℕ} (mat : Mat n m) : Prop :=
-  ¬is_full_rank mat
-```
-### Example
-```hs
-def mat : Matrix (Fin 3) (Fin 3) ℚ := ![![1, 1, 1], ![2 ,2 ,2], ![ 3, 3, 3]]
-
-open Matrix
-example : not_full_rank mat := by
-  unfold not_full_rank is_full_rank
-  push_neg
-  let r : Matrix (Fin 1) (Fin 3) ℚ := !![-2, 1, 0]
-  use r
-  constructor
-  . trivial
-  . funext i j
-    simp[r, vecMul, mat]
-    fin_cases i <;> fin_cases j <;> dsimp <;> simp
-```
-<br>
-
-If matrix $[A - \lambda I \quad B]$ does not have full row rank at every eigenvalue, $\lambda$, of $A$, then $\exists \lambda_1$ and a $1 \times n$ vector $q \neq 0$ such that
-
-$$
-q [A - \lambda_1 I \quad B] = 0
-$$
-
-which implies $qA = \lambda_1q$ and $qB = 0$.
-
-Here we require a way to construct a matrix from other matrices. 
-
-### BlockMatLib
-
-### `ofBlocks` and ` getBlocks`
-Next we needed to be able to form a new matrix out of smaller matrices and a way to slice a matrix by columns to form a new matrix out of those columns.
-
-Since we could not find existing methods within Matlib to do this, we created `ofBlocks` and ` getBlocks`. This allows us to form two proofs:
-- Proof that $q \cdot [A \quad B] = [q \cdot A \quad q \cdot B]$ where $q$ is row vector and $A$ and $B$ are matrices or column vectors.
-
-```hs
-theorem distrib_ofBlocks {n m p : ℕ} (q : Mat 1 n) (A : Mat n m) (B : Mat n p) : 
-q * (ofBlocks A B) = ofBlocks (q*A) (q*B) := by
-  ext i j
-  rcases i
-  rcases j
-  rename_i i hi j ji
-  unfold ofBlocks
-  by_cases hj: j < m 
-  <;>
-  simp[Matrix.mul_apply]
-```
-- Proof that block $B$ of $q \cdot [A \quad B \quad C]$ is equal to $q \cdot B$.
-
-```hs
-theorem distrib_getBlock {n m: ℕ} (q : Mat 1 n) (A : Mat n m) (a b : ℕ) (h: a ≤ b ∧ b < m) : q * (getBlock A a b h) = getBlock (q*A) a b h := by
-  ext i j
-  rcases i
-  rcases j
-  rename_i i hi j ji
-  unfold getBlock
-  simp[Matrix.mul_apply]
-```
-### ControlLib
-
-We define the method of constructing the controllability matrix, $C$, which takes the $A$ and $B$ matrices as inputs.
-
-```hs
-def ctrbMat {n : ℕ}
-(A : Mat n n)
-(B : Mat n 1)
-: Matrix (Fin n) (Fin n) ℚ :=
-  λ i j => (A^j.val*B) i 0
-```
-### Example
-
-Applying `ctrbMat` with $A$ and $B$ matrices will give us a matrix $[B \quad AB]$.
-```hs
-def A_mat : Mat 2 2 := !![1, 2; 3, 4]
-def B_vec : Mat 2 1 := !![1; 1]
-
-#eval ctrbMat A_mat B_vec
-```
-We also define the method of constructing the $[A- \lambda I \quad B]$ matrix, which takes in a matrices $A$ and $B$ and a scalar (eigenvalue) as inputs using the `ofBlocks` function defined in `BlockMatLib`.
-
-```hs
-def ABe {n : ℕ} (A : Mat n n) (B : Mat n 1) (e : α) :=
-  ofBlocks (A-e•(1 : Mat n n)) B
-``` -->
-
 
 # Conclusion
 
-Our goal with this project is to prove in lean that the contrallability matrix has full row rank if the matrix $[A-\lambda I \quad B]$ has full row rank. We were successful with encoding this proof and while doing so, have built a significant amount of the machinery required. We have encoded the necessary linear algebra definitions, built functions to construct and destruct matrices from and to blocks, and used those functions to build other functions to construct the contrallability matrix and the matrix $[A-\lambda I \quad B]$. 
+Our goal with this project is to prove in lean that the contrallability matrix has full row rank if the matrix $[A-\lambda I \quad B]$ has full row rank. We were successful with encoding this proof and while doing so, have built a significant amount of the machinery required for ease of working with linear algebra and other controls topics in Lean 4. We have encoded the necessary linear algebra definitions, built functions to construct and destruct matrices from and to blocks, and used those functions to build other functions to construct the contrallability matrix and the matrix $[A-\lambda I \quad B]$. 
 
 To complete the proof of equivalance of statements ($3$) and ($4$), we will need to encode the proof that if the controllability does not have full row rank, then there exists some eigenvalue, $\lambda_1$ of $A$ such that the matrix $[(A-λI) \quad B]$ does not have full row rank. This would be the goal for future work. To do so, we would require 2 additional theorems:
 
@@ -390,4 +265,8 @@ $$
 
 # References
 
-Chen, Chi-Tsong. (2013). Linear Systems Theory and Design. Oxford University Press, 184-187
+1. Avigad, J. and Massot, P. (2025) Mathematics in Lean. Available at: https://leanprover-community.github.io/mathematics_in_lean/mathematics_in_lean.pdf
+
+2. Chen, C.-T. (2013) ‘Chapter 6’, in Linear System Theory and Design. International Fourth Edition. Oxford University Press, pp. 184–187. 
+
+3. Theorem proving in Lean 4 (no date) Theorem Proving in Lean 4 - Theorem Proving in Lean 4. Available at: https://lean-lang.org/theorem_proving_in_lean4/title_page.html
