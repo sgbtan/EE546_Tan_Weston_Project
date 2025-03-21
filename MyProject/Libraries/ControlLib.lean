@@ -63,7 +63,7 @@ theorem ABeRight {n : ℕ}
   have : j = 0 := by exact Fin.fin_one_eq_zero j
   simp[getBlock,ABe,ofBlocks,this]
 
---
+-- Proves that matrices constructed from the same columns of equivalent matrices are equivalent
 @[simp]
 theorem getBlockEquiv {n : ℕ}
 (A : Mat n m)
@@ -87,7 +87,7 @@ theorem getBlockZero {n : ℕ}
   ext i j
   simp [hA]
 
--- Proves that q[(A-λI) B] = 0 implies that qb = 0
+-- Proves that if q[(A-λI) B] = 0 then qb = 0
 @[simp]
 theorem ABeRightZero {n : ℕ}
 (A : Mat n n)
@@ -96,17 +96,17 @@ theorem ABeRightZero {n : ℕ}
 (e : α)
 : q * (ABe A B e) = 0 → q*B = 0 := by
   intro hq
-  -- Prove that the last column of q[(A-λI) B] is equal to 0
-  have hqb : getBlock (q*(ABe A B e)) n 1 (by simp) = 0 := by
+  -- Proves that the last column of q[(A-λI) B] is equal to 0
+  have hqb : getBlock (q*(ABe A B e)) n 1 (by rfl) = 0 := by
     exact getBlockEquiv (q * ABe A B e) 0 n 1 (le_refl (n + 1)) hq
-  -- Prove that q can be moved to the inside so that the last column
+  -- Proves that q can be moved to the inside so that the last column
   -- of q[(A-λI) B] is equal to the last column of [q(a-λI) qb]
-  have hgb : getBlock (q*(ABe A B e)) n 1 (by simp) = q * getBlock (ABe A B e) n 1 (by simp) := by rfl
+  have hgb : getBlock (q*(ABe A B e)) n 1 (by rfl) = q * getBlock (ABe A B e) n 1 (by rfl) := by rfl
   rw [hgb] at hqb
   rw [ABeRight] at hqb
   exact hqb
 
--- Proves that q[(A-λI) B] = 0 implies that qA = qλI
+-- Proves that if q[(A-λI) B] = 0 then qA = qλI
 @[simp]
 theorem ABeLeftZero {n : ℕ}
 (A : Mat n n)
@@ -115,16 +115,21 @@ theorem ABeLeftZero {n : ℕ}
 (e : α)
 : q * (ABe A B e) = 0 → q*A = q*e•(1 : Mat n n) := by
   intro hq
+  -- Proves that the first n columns of q[(A-λI) B] are equal to 0
   have hqA : getBlock (q*(ABe A B e)) 0 n (by simp) = 0 := by
     exact getBlockEquiv (q * ABe A B e) 0 0 n (by simp) hq
+  -- Proves that q can be moved to the inside so that the last column
+  -- of q[(A-λI) B] is equal to the last column of [q(a-λI) qb]
   have hgb : getBlock (q*(ABe A B e)) 0 n (by simp) = q * getBlock (ABe A B e) 0 n (by simp) := by rfl
   rw [hgb] at hqA
   rw [ABeLeft] at hqA
+  -- Proves that q can be distributed into [ A-λI ]
   obtain hqAe : q * (A - e • 1) = q*A - q*e•(1 : Mat n n) := by
     exact Matrix.mul_sub q A (e • 1)
   rw [hqAe] at hqA
-  obtain thing : q*A - q*e•(1 : Mat n n) + q*e•(1 : Mat n n) = 0 + q*e•(1 : Mat n n):= by
+  -- Rearranges hqAe so that it can be simplified to show the main goal
+  have : q*A - q*e•(1 : Mat n n) + q*e•(1 : Mat n n) = 0 + q*e•(1 : Mat n n):= by
     exact congrFun (congrArg HAdd.hAdd hqA) (q * e • 1)
-  simp at thing
+  simp at this
   simp
-  exact thing
+  exact this

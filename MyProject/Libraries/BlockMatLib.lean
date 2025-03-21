@@ -2,7 +2,7 @@ import Mathlib.Tactic
 import MyProject.Libraries.LinAlgDefs
 
 
--- Create n x m+p matrix out of n x m and n x p matrices
+-- Combines matrices A and B to form a block matrix [A B]
 @[simp]
 def ofBlocks {n m p : ℕ}
 (A : Mat n m)
@@ -21,6 +21,7 @@ def ofBlocks {n m p : ℕ}
     B i k
 
 
+-- Extracts a block made from columns of matrix A staring at column index a and ending at index a+l
 @[simp]
 def getBlock {n m : ℕ}
 (A : Mat n m)
