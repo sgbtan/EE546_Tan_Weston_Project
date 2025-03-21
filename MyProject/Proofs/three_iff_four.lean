@@ -42,5 +42,5 @@ theorem three_iff_four :
 ((is_full_rank (ctrbMat A B) ↔ is_full_rank (ABe A B e))) := by
   intro A B e he
   constructor
-  . sorry
-  . sorry
+  . exact fun a ↦ three_to_four A B a (↑e) he
+  . exact fun a ↦ four_to_three A B (↑e) he a
